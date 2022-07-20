@@ -1,0 +1,19 @@
+전화번호	+821033796950
+통신사	KT
+모델 번호	SM-F707N
+시리얼 번호	Not Available
+네트워크 종류	MOBILE(LTE)
+IP	192.0.0.2
+로밍	false
+안드로이드 버전	12(SP1A.210812,016,F707NKSU2EUL8)
+OS 버전	4.19.113-23229728
+프로세서	arm64-v8a
+메모리 사용량	Total: 8.02GB, Free: 2.58GB
+내부 저장소	Total: 243GB, Free: 146GB
+SD 카드 저장소	N/A
+해상도	Width : 1080, Height : 2636
+언어	ko
+IMEI(디바이스ID)	Not Available
+배터리	46%
+제조사	samsung(Knox : 35)(OneUI : 4.0)
+앱 버전	v10.21.10.12.1
