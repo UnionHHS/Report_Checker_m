@@ -390,7 +390,7 @@ class MyApp(QWidget):
         self.no_button[7].released.connect(lambda: self.n_reg(7))
 
         # self.resize(width=500)
-        self.setFixedSize(750, 350)
+        self.setFixedSize(800, 350)
         self.show()
 
     def list_to_text(self):
