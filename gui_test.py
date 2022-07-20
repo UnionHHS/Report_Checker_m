@@ -457,17 +457,17 @@ class MyApp(QWidget):
         # else:
             # self.vaccine_list.setCurrentIndex(0)
 
-        # self.vaccine_used.setText("")
-        for i in self.stat_label:
-            if "취약" in i.text():
-                temp = i.text().replace("취약", "")
-                i.setText(temp)
-            elif "양호" in i.text():
-                temp = i.text().replace("양호", "")
-                i.setText(temp)
-        self.ans = ["", "", "", "", "", "", "", ""]
+        # # self.vaccine_used.setText("")
+        # for i in self.stat_label:
+        #     if "취약" in i.text():
+        #         temp = i.text().replace("취약", "")
+        #         i.setText(temp)
+        #     elif "양호" in i.text():
+        #         temp = i.text().replace("양호", "")
+        #         i.setText(temp)
+        # self.ans = ["", "", "", "", "", "", "", ""]
 
-        self.stat_print()
+        # self.stat_print()
 
     def y_reg(self, n):
         # self.update()
