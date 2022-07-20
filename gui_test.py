@@ -294,13 +294,19 @@ class MyApp(QWidget):
         self.change_script = QPushButton("복사 문구 수정")
         self.change_script.released.connect(self.script_change)
 
-        vaccine_text = QLabel("사용중인 백신 : ")
-        self.vaccine_list = QLabel
-        
-        self.vaccine_used = QLineEdit("")
-        self.vaccine_used.setEnabled(False)
+        vaccine_text = QLabel("사용중인 백신(수동 입력시 ,으로 구분): ")
 
-        self.install_vaccine = QCheckBox("점검중 설치시")
+        vac_list = ['미설치','V3 Mobile Security', '알약M', '네이버 백신', '모바일가드', '기타...']
+
+        self.vaccine_list = QComboBox()
+        for i in vac_list:
+            self.vaccine_list.addItem(i)
+        self.vaccine_list.currentIndexChanged.connect(self.list_to_text)
+
+        self.vaccine_used = QLineEdit("")
+        # self.vaccine_used.setEnabled(False)
+
+        self.install_vaccine = QCheckBox("점검중 설치")
         self.install_vaccine.setEnabled(True)
 
         hbox = QHBoxLayout()
@@ -308,9 +314,10 @@ class MyApp(QWidget):
         hbox.addWidget(seq_label)
         hbox.addWidget(self.seq_data)
 
-        hbox1 = QHBoxLayout()
-        hbox1.addWidget(vaccine_text)
-        hbox1.addWidget(self.vaccine_used)
+        self.hbox1 = QHBoxLayout()
+        self.hbox1.addWidget(vaccine_text)
+        self.hbox1.addWidget(self.vaccine_list)
+        # hbox1.addWidget(self.vaccine_used)
 
         self.running_seq = [
             "",
@@ -346,7 +353,8 @@ class MyApp(QWidget):
         grid.addWidget(self.any_data, 1, 4, 7, 3)
 
         grid.addWidget(self.change_script, 0, 4, 1, 1)
-        grid.addLayout(hbox1,10,0,1,4)
+        grid.addLayout(self.hbox1,10,0,1,4)
+        # grid.addWidget(self.vaccine_used,10,1,1,2)
         grid.addWidget(self.install_vaccine,10,4)
         grid.addWidget(self.stat_now, 8, 4, 1, 3, alignment=Qt.AlignCenter)
 
@@ -384,6 +392,16 @@ class MyApp(QWidget):
         self.setFixedSize(750, 350)
         self.show()
 
+    def list_to_text(self):
+        # print(self.vaccine_list.currentText())
+        # try:
+        if self.vaccine_list.currentText() == '기타...':
+            # self.hbox1.removeWidget(self.vaccine_list)
+            self.hbox1.itemAt(1).widget().setParent(None)
+            self.hbox1.addWidget(self.vaccine_used)
+        # except Exception as e:
+        #     print(e)
+
     def return_Press(self):
 
         seq_re = re.compile("\d{4}\-\d{4}\-\d{5}")
@@ -396,7 +414,7 @@ class MyApp(QWidget):
             self.any_confirm.setEnabled(True)
             self.seq_num = text
             self.running_seq[0] = "y"
-            print(self.seq_num)
+            # print(self.seq_num)
         else:
             QMessageBox.about(self, "알림", f"일련번호의 데이터가 감지되지 않습니다.\n일련번호를 확인해주세요.")
 
@@ -416,7 +434,7 @@ class MyApp(QWidget):
                 i.setEnabled(True)
             self.vaccine_used.setEnabled(True)
             self.install_vaccine.setEnabled(True)
-
+            self.vaccine_list.setEnabled(True)
         self.running_seq[1] = "y"
 
     def reset_press(self):
@@ -428,8 +446,16 @@ class MyApp(QWidget):
             i.setEnabled(False)
         for i in self.no_button:
             i.setEnabled(False)
-        self.vaccine_used.setEnabled(False)
+        # self.vaccine_used.setEnabled(False)
         self.install_vaccine.setEnabled(False)
+        self.vaccine_list.setCurrentIndex(0)
+        self.install_vaccine.setEnabled(False)
+        self.vaccine_list.setEnabled(False)
+        self.hbox1.itemAt(1).widget().setParent(None)
+        self.hbox1.addWidget(self.vaccine_list)
+        # else:
+            # self.vaccine_list.setCurrentIndex(0)
+
         # self.vaccine_used.setText("")
         for i in self.stat_label:
             if "취약" in i.text():
@@ -583,14 +609,21 @@ class MyApp(QWidget):
                         i.text = i.text.replace("Broad_Bender", u_data["통신사"])
                     if "Used_Vaccine" in i.text:
                         # print(self.vaccine_used.text())
-                        
-                        if self.vaccine_used.text() == '':
+                        # print(self.hbox1.itemAt(1).widget())
+                        if (self.vaccine_used.text() == '' and self.vaccine_list.currentText() == '미설치') or (self.vaccine_used.text() == '' and self.vaccine_list.currentText() == '기타...'):
                             i.text = i.text.replace("Used_Vaccine", "미설치")
                         else:
-                            if self.install_vaccine.isChecked():
-                                i.text = i.text.replace("Used_Vaccine", self.vaccine_used.text()+"(점검중 설치)")
+                            if type(self.hbox1.itemAt(1).widget()) == type(QComboBox()):
+                                # print(self.vaccine_list.currentText())
+                                if self.install_vaccine.isChecked():
+                                    i.text = i.text.replace("Used_Vaccine", self.vaccine_list.currentText()+" (점검중 설치)")
+                                else:
+                                    i.text = i.text.replace("Used_Vaccine", self.vaccine_list.currentText())
                             else:
-                                i.text = i.text.replace("Used_Vaccine", self.vaccine_used.text())
+                                if self.install_vaccine.isChecked():
+                                    i.text = i.text.replace("Used_Vaccine", self.vaccine_used.text()+" (점검중 설치)")
+                                else:
+                                    i.text = i.text.replace("Used_Vaccine", self.vaccine_used.text())
 
                 tables = doc.tables
 
@@ -625,7 +658,7 @@ class MyApp(QWidget):
                 try:
                     if not os.path.isdir(self.seq_num.split("-")[1]):
                         os.mkdir(self.seq_num.split("-")[1])
-                        print(1)
+                        # print(1)
                     else:
                         pass
                 except:
@@ -633,7 +666,7 @@ class MyApp(QWidget):
 
                 try:
                     doc.save(f"./" + self.seq_num.split("-")[1] + "/" + self.seq_num + ".docx")
-                    print(2)
+                    # print(2)
                     # sub_file_name = self.seq_num.split('-')[1]
                 except:
                     doc.save(f"./" + self.seq_num + ".docx")
@@ -668,11 +701,28 @@ class MyApp(QWidget):
                     i.setEnabled(False)
                 for i in self.no_button:
                     i.setEnabled(False)
-                self.vaccine_used.setEnabled(False)
-                self.vaccine_used.setText("")
                 self.seq_data.setText("")
                 self.any_data.setText("")
+
+                self.vaccine_used.setEnabled(False)
+                self.vaccine_used.setText("")
+
                 self.install_vaccine.setEnabled(False)
+                self.vaccine_list.setEnabled(False)
+                self.vaccine_list.setCurrentIndex(0)
+                # print(self.vaccine_list.currentText())
+                # try:
+                self.hbox1.itemAt(1).widget().setParent(None)
+                self.hbox1.addWidget(self.vaccine_list)
+                # self.hbox1.addWidget(self.vaccine_used)
+                # except:
+                #     pass
+
+                # try:
+                #     self.hbox1.removeWidget(self.install_vaccine)
+                #     se
+                
+
                 for i in self.stat_label:
                     if "취약" in i.text():
                         temp = i.text().replace("취약", "")
