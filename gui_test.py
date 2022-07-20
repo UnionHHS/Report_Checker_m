@@ -294,9 +294,14 @@ class MyApp(QWidget):
         self.change_script = QPushButton("복사 문구 수정")
         self.change_script.released.connect(self.script_change)
 
-        vaccine_text = QLabel("사용중인 백신 명(, 으로 분리) : ")
+        vaccine_text = QLabel("사용중인 백신 : ")
+        self.vaccine_list = QLabel
+        
         self.vaccine_used = QLineEdit("")
         self.vaccine_used.setEnabled(False)
+
+        self.install_vaccine = QCheckBox("점검중 설치시")
+        self.install_vaccine.setEnabled(True)
 
         hbox = QHBoxLayout()
 
@@ -341,7 +346,8 @@ class MyApp(QWidget):
         grid.addWidget(self.any_data, 1, 4, 7, 3)
 
         grid.addWidget(self.change_script, 0, 4, 1, 1)
-        grid.addLayout(hbox1,10,0,1,5)
+        grid.addLayout(hbox1,10,0,1,4)
+        grid.addWidget(self.install_vaccine,10,4)
         grid.addWidget(self.stat_now, 8, 4, 1, 3, alignment=Qt.AlignCenter)
 
         for x in range(1, len(self.stat_label) + 1):
@@ -409,6 +415,7 @@ class MyApp(QWidget):
             for i in self.no_button:
                 i.setEnabled(True)
             self.vaccine_used.setEnabled(True)
+            self.install_vaccine.setEnabled(True)
 
         self.running_seq[1] = "y"
 
@@ -422,6 +429,7 @@ class MyApp(QWidget):
         for i in self.no_button:
             i.setEnabled(False)
         self.vaccine_used.setEnabled(False)
+        self.install_vaccine.setEnabled(False)
         # self.vaccine_used.setText("")
         for i in self.stat_label:
             if "취약" in i.text():
@@ -575,10 +583,14 @@ class MyApp(QWidget):
                         i.text = i.text.replace("Broad_Bender", u_data["통신사"])
                     if "Used_Vaccine" in i.text:
                         # print(self.vaccine_used.text())
+                        
                         if self.vaccine_used.text() == '':
                             i.text = i.text.replace("Used_Vaccine", "미설치")
                         else:
-                            i.text = i.text.replace("Used_Vaccine", self.vaccine_used.text())
+                            if self.install_vaccine.isChecked():
+                                i.text = i.text.replace("Used_Vaccine", self.vaccine_used.text()+"(점검중 설치)")
+                            else:
+                                i.text = i.text.replace("Used_Vaccine", self.vaccine_used.text())
 
                 tables = doc.tables
 
@@ -660,7 +672,7 @@ class MyApp(QWidget):
                 self.vaccine_used.setText("")
                 self.seq_data.setText("")
                 self.any_data.setText("")
-
+                self.install_vaccine.setEnabled(False)
                 for i in self.stat_label:
                     if "취약" in i.text():
                         temp = i.text().replace("취약", "")
