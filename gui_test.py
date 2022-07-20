@@ -302,12 +302,13 @@ class MyApp(QWidget):
         for i in vac_list:
             self.vaccine_list.addItem(i)
         self.vaccine_list.currentIndexChanged.connect(self.list_to_text)
+        self.vaccine_list.setEnabled(False)
 
         self.vaccine_used = QLineEdit("")
         # self.vaccine_used.setEnabled(False)
 
         self.install_vaccine = QCheckBox("점검중 설치")
-        self.install_vaccine.setEnabled(True)
+        self.install_vaccine.setEnabled(False)
 
         hbox = QHBoxLayout()
 
