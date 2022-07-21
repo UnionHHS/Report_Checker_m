@@ -307,8 +307,9 @@ class MyApp(QWidget):
         self.vaccine_used = QLineEdit("")
         # self.vaccine_used.setEnabled(False)
 
-        self.install_vaccine = QCheckBox("점검중 설치")
+        self.install_vaccine = QPushButton("백신 리스트로")
         self.install_vaccine.setEnabled(False)
+        self.install_vaccine.released.connect(self.text_to_list)
 
         hbox = QHBoxLayout()
 
@@ -400,8 +401,15 @@ class MyApp(QWidget):
             # self.hbox1.removeWidget(self.vaccine_list)
             self.hbox1.itemAt(1).widget().setParent(None)
             self.hbox1.addWidget(self.vaccine_used)
+            self.install_vaccine.setEnabled(True)
         # except Exception as e:
         #     print(e)
+
+    def text_to_list(self):
+        self.hbox1.itemAt(1).widget().setParent(None)
+        self.hbox1.addWidget(self.vaccine_list)
+        self.install_vaccine.setEnabled(False)
+        self.vaccine_list.setCurrentIndex(0)
 
     def return_Press(self):
 
@@ -434,7 +442,7 @@ class MyApp(QWidget):
             for i in self.no_button:
                 i.setEnabled(True)
             self.vaccine_used.setEnabled(True)
-            self.install_vaccine.setEnabled(True)
+            # self.install_vaccine.setEnabled(True)
             self.vaccine_list.setEnabled(True)
         self.running_seq[1] = "y"
 
@@ -448,9 +456,9 @@ class MyApp(QWidget):
         for i in self.no_button:
             i.setEnabled(False)
         # self.vaccine_used.setEnabled(False)
+
         self.install_vaccine.setEnabled(False)
         self.vaccine_list.setCurrentIndex(0)
-        self.install_vaccine.setEnabled(False)
         self.vaccine_list.setEnabled(False)
         self.hbox1.itemAt(1).widget().setParent(None)
         self.hbox1.addWidget(self.vaccine_list)
