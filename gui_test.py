@@ -141,12 +141,12 @@ class script_modify(QDialog):
                 if not os.path.isfile("./script.json"):
                     print("파일 생성")
                     with open("./script.json", "w", encoding="utf-8") as f:
-                        json.dump(self.temp, f, ensure_ascii=False)
+                        json.dump(self.temp, f)
                 else:
                     with open("./script_bak.json", "w", encoding="utf-8") as f:
-                        json.dump(self.scripts, f, ensure_ascii=False)
+                        json.dump(self.scripts, f)
                     with open("./script.json", "w", encoding="utf-8") as f:
-                        json.dump(self.temp, f, ensure_ascii=False)
+                        json.dump(self.temp, f)
                 self.work = True
                 self.close()
 
@@ -189,6 +189,7 @@ class MyApp(QWidget):
         self.stat_now.setText(f"양호 : {good_c} | 취약 : {bad_c}")
 
     def script_init(self):
+        windows_user_name = os.path.expanduser("~")
         if not os.path.isfile("./script.json"):
             reply = QMessageBox.question(
                 self,
@@ -223,21 +224,32 @@ class MyApp(QWidget):
                         ],
                         "취약 : 구글 2단계 인증 설정이 되어있지 않아 취약합니다.\n\n구글 2단계 인증을 하면 구글계정의 사용 내역 등 개인정보들이 보다 안전하게 관리될 수 있으니 설정하여 사용하시는 것을 권고 드립니다.\n\n(접근 방법 : 설정 -> Google -> Google 계정 관리 -> 보안 탭 -> 2단계 인증 -> 활성화 진행)",
                     ],
+                    "저장경로": windows_user_name + "/Desktop",
                 }
-
-                with open("./script.json", "w", encoding="utf-8") as f:
-                    json.dump(script_temp, f, ensure_ascii=False)
-                    # json.dump(f, script_temp, ensure_ascii=False)
+                
+                try:
+                    with open("./script.json", "w", encoding="utf-8") as f:
+                        json.dump(script_temp, f)
+                except:
+                    pass
+                        # json.dump(f, script_temp, ensure_ascii=False)
                 # self.script_change()
-                scripts = script_temp
+                self.scripts = script_temp
                 # self.script_init()
 
         else:
             with open("./script.json", encoding="utf-8") as f:
-                scripts = json.load(f)
+                self.scripts = json.load(f)
 
-        self.good_text = scripts["양호"]
-        self.bad_text = scripts["취약"]
+        self.good_text = self.scripts["양호"]
+        self.bad_text = self.scripts["취약"]
+        try:
+            self.save_locate = self.scripts["저장경로"]
+        except KeyError:
+            self.scripts['저장경로'] = windows_user_name + '/Desktop'
+            with open("./script.json", 'w', encoding="utf-8") as f:
+                json.dump(self.scripts,f)
+
 
     def script_change(self):
         scr = script_modify(self)
@@ -257,10 +269,10 @@ class MyApp(QWidget):
         #     Thread(target=self.title_renewer).start()
         # else:
         self.setWindowTitle("보고서 생성기")
-        grid = QGridLayout()
-        self.setLayout(grid)
+        self.grid = QGridLayout()
+        self.setLayout(self.grid)
 
-        seq_label = QLabel("일련번호 : ")
+        seq_label = QLabel("예약번호 : ")
 
         self.seq_data = QLineEdit()
         self.seq_data.returnPressed.connect(self.return_Press)
@@ -343,35 +355,37 @@ class MyApp(QWidget):
         self.yes_button = [QPushButton("양호") for _ in range(len(question))]
         self.no_button = [QPushButton("취약") for _ in range(len(question))]
 
-        grid.addLayout(hbox, 0, 0)
-        grid.addWidget(self.seq_confirm, 0, 1)
-        grid.addWidget(self.clip_ck_box, 0, 2, alignment=Qt.AlignCenter)
-        grid.addWidget(data_label, 0, 5, alignment=Qt.AlignCenter)
-        grid.addWidget(self.any_confirm, 0, 6)
+        self.grid.addLayout(hbox, 0, 0)
+        self.grid.addWidget(self.seq_confirm, 0, 1)
+        self.grid.addWidget(self.clip_ck_box, 0, 2, alignment=Qt.AlignCenter)
+        self.grid.addWidget(data_label, 0, 5, alignment=Qt.AlignCenter)
+        self.grid.addWidget(self.any_confirm, 0, 6)
 
-        grid.addWidget(self.save, 10, 5)
-        grid.addWidget(self.reset, 10, 6)
+        self.grid.addWidget(self.save, 10, 5)
+        self.grid.addWidget(self.reset, 10, 6)
 
-        grid.addWidget(self.any_data, 1, 4, 7, 3)
+        self.grid.addWidget(self.any_data, 1, 4, 7, 3)
 
-        grid.addWidget(self.change_script, 0, 4, 1, 1)
-        grid.addLayout(self.hbox1,10,0,1,4)
+        self.grid.addWidget(self.change_script, 0, 4, 1, 1)
+        self.grid.addLayout(self.hbox1,10,0,1,4)
         # grid.addWidget(self.vaccine_used,10,1,1,2)
-        grid.addWidget(self.install_vaccine,10,4)
-        grid.addWidget(self.stat_now, 8, 4, 1, 3, alignment=Qt.AlignCenter)
+        self.grid.addWidget(self.install_vaccine,10,4)
+        self.grid.addWidget(self.stat_now, 8, 4, 1, 3, alignment=Qt.AlignCenter)
 
         for x in range(1, len(self.stat_label) + 1):
-            grid.addWidget(self.stat_label[x - 1], x, 0)
+            self.grid.addWidget(self.stat_label[x - 1], x, 0)
         for x in range(1, len(self.yes_button) + 1):
             self.yes_button[x - 1].setEnabled(False)
-            grid.addWidget(self.yes_button[x - 1], x, 1)
+            self.grid.addWidget(self.yes_button[x - 1], x, 1)
         for x in range(1, len(self.no_button) + 1):
             self.no_button[x - 1].setEnabled(False)
-            grid.addWidget(self.no_button[x - 1], x, 2)
+            self.grid.addWidget(self.no_button[x - 1], x, 2)
 
         
         # grid.addWidget(hbox1,11,1)
 
+        # self.yes_button[0].released.connect(lambda: self.y_reg(0))
+        # self.yes_button[0].setEnabled(True)
         self.yes_button[0].released.connect(lambda: self.y_reg(0))
         self.yes_button[1].released.connect(lambda: self.y_reg(1))
         self.yes_button[2].released.connect(lambda: self.y_reg(2))
@@ -425,7 +439,7 @@ class MyApp(QWidget):
             self.running_seq[0] = "y"
             # print(self.seq_num)
         else:
-            QMessageBox.about(self, "알림", f"일련번호의 데이터가 감지되지 않습니다.\n일련번호를 확인해주세요.")
+            QMessageBox.about(self, "알림", f"예약번호의 데이터가 감지되지 않습니다.\n예약번호를 확인해주세요.")
 
     def enable_any_data(self):
         # self.any_data.setEnabled(False)
@@ -554,7 +568,7 @@ class MyApp(QWidget):
                 if "" == self.running_seq[i]:
                     if i == 0:
                         QMessageBox.about(
-                            self, "알림", f"일련번호가 입력되지 않았습니다.\n일련번호를 확인해주세요."
+                            self, "알림", f"예약번호가 입력되지 않았습니다.\n예약번호를 확인해주세요."
                         )
                         break
                     elif i == 1:
@@ -652,7 +666,8 @@ class MyApp(QWidget):
 
                 origin_locate = os.getcwd()
 
-                os.chdir(windows_user_name + "/Desktop")
+                # os.chdir(windows_user_name + "/Desktop")
+                os.chdir(self.scripts['저장경로'])
 
                 tm = time.localtime(time.time())
 
@@ -710,8 +725,6 @@ class MyApp(QWidget):
                     i.setEnabled(False)
                 for i in self.no_button:
                     i.setEnabled(False)
-                self.seq_data.setText("")
-                self.any_data.setText("")
 
                 self.vaccine_used.setEnabled(False)
                 self.vaccine_used.setText("")
@@ -723,23 +736,7 @@ class MyApp(QWidget):
                 # try:
                 self.hbox1.itemAt(1).widget().setParent(None)
                 self.hbox1.addWidget(self.vaccine_list)
-                # self.hbox1.addWidget(self.vaccine_used)
-                # except:
-                #     pass
 
-                # try:
-                #     self.hbox1.removeWidget(self.install_vaccine)
-                #     se
-                
-
-                for i in self.stat_label:
-                    if "취약" in i.text():
-                        temp = i.text().replace("취약", "")
-                        i.setText(temp)
-                    elif "양호" in i.text():
-                        temp = i.text().replace("양호", "")
-                        i.setText(temp)
-                self.ans = ["", "", "", "", "", "", "", ""]
                 self.stat_print()
             else:
                 pass

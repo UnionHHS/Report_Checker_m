@@ -1,0 +1,111 @@
+        취약 버튼 생성 (양호도 마찬가지)
+        # for x in range(1, len(self.no_button) + 1):
+        #     self.no_button[x - 1].setEnabled(False)
+        #     grid.addWidget(self.no_button[x - 1], x, 2)
+
+        제거된거
+        # grid.addWidget(hbox1,11,1)
+        
+        이벤트
+        # self.yes_button[0].released.connect(lambda: self.y_reg(0))
+        # self.yes_button[1].released.connect(lambda: self.y_reg(1))
+        # self.yes_button[2].released.connect(lambda: self.y_reg(2))
+        # self.yes_button[3].released.connect(lambda: self.y_reg(3))
+        # self.yes_button[4].released.connect(lambda: self.y_reg(4))
+        # self.yes_button[5].released.connect(lambda: self.y_reg(5))
+        # self.yes_button[6].released.connect(lambda: self.y_reg(6))
+        # self.yes_button[7].released.connect(lambda: self.y_reg(7))
+
+        # self.no_button[0].released.connect(lambda: self.n_reg(0))
+        # self.no_button[1].released.connect(lambda: self.n_reg(1))
+        # self.no_button[2].released.connect(lambda: self.n_reg(2))
+        # self.no_button[3].released.connect(lambda: self.n_reg(3))
+        # self.no_button[4].released.connect(lambda: self.n_reg(4))
+        # self.no_button[5].released.connect(lambda: self.n_reg(5))
+        # self.no_button[6].released.connect(lambda: self.n_reg(6))
+        # self.no_button[7].released.connect(lambda: self.n_reg(7))
+
+        # self.resize(width=500)
+
+        # return 1
+초기화시
+        # for i in self.stat_label:
+        #             if "취약" in i.text():
+        #                 temp = i.text().replace("취약", "")
+        #                 i.setText(temp)
+        #             elif "양호" in i.text():
+        #                 temp = i.text().replace("양호", "")
+        #                 i.setText(temp)
+        #         self.ans = ["", "", "", "", "", "", "", ""]
+        #         self.stat_print()
+
+버튼 식 이였을때
+    # def y_reg(self, n):
+    #     # self.update()
+    #     # print(n)
+    #     if self.clip_ck_box.isChecked():
+    #         if len(self.good_text[n]) >= 2 and type(self.good_text[n]) == list:
+    #             copy("\n".join(self.good_text[n]))
+    #         else:
+    #             copy(self.good_text[n])
+
+    #     if "취약" in self.stat_label[n].text():
+    #         temp = self.stat_label[n].text().replace("취약", "")
+    #         self.stat_label[n].setText(temp + "양호")
+    #         self.ans[n] = "양호"
+    #         # print(self.ans)
+    #     elif "양호" in self.stat_label[n].text():
+    #         pass
+    #     else:
+    #         self.stat_label[n].setText(self.stat_label[n].text() + "양호")
+    #         self.ans[n] = "양호"
+    #         # print(self.ans)
+    #     self.stat_print()
+
+    # def n_reg(self, n):
+    #     # self.update()
+    #     if self.clip_ck_box.isChecked():
+    #         if n == 6:
+    #             text_temp, ok = QInputDialog.getText(
+    #                 self, "앱 권한 취약점", "앱 이름을 적으세요. (다수입력시 : Samsung Notes, Chrome ..."
+    #             )
+
+    #             if ok:
+    #                 if len(self.bad_text[n]) >= 2 and type(self.bad_text[n]) == list:
+    #                     for i in range(len(self.bad_text[n])):
+    #                         if "대상 어플" in self.bad_text[n][i]:
+    #                             index = i
+
+    #                     if not index:
+    #                         copy("\n".join(self.bad_text[n]))
+    #                     else:
+    #                         self.bad_text[n][index] += text_temp
+    #                         copy("\n".join(self.bad_text[n]))
+    #                         self.bad_text[n][index] = self.bad_text[n][index].replace(
+    #                             text_temp, ""
+    #                         )
+    #                 else:
+    #                     copy(self.bad_text[n])
+
+    #         elif len(self.bad_text[n]) >= 2 and type(self.bad_text[n]) == list:
+    #             copy("\n".join(self.bad_text[n]))
+    #         else:
+    #             copy(self.bad_text[n])
+
+    #     if "양호" in self.stat_label[n].text():
+    #         temp = self.stat_label[n].text().replace("양호", "")
+    #         self.stat_label[n].setText(temp + "취약")
+    #         self.ans[n] = "취약"
+    #         # print(self.ans)
+    #     elif "취약" in self.stat_label[n].text():
+    #         pass
+    #     else:
+    #         self.stat_label[n].setText(self.stat_label[n].text() + "취약")
+    #         self.ans[n] = "취약"
+    #         # print(self.ans)
+    #     self.stat_print()
+
+                for i in self.yes_button:
+                    i.setEnabled(False)
+                for i in self.no_button:
+                    i.setEnabled(False)
