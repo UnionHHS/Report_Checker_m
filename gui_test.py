@@ -511,7 +511,7 @@ class MyApp(QWidget):
             self.stat_label[n].setText(self.stat_label[n].text() + "양호")
             self.ans[n] = "양호"
             # print(self.ans)
-        self.yes_button[n].setStyleSheet('color:blue')
+        self.yes_button[n].setStyleSheet('color:#0077FF')
         self.no_button[n].setStyleSheet('')
         self.stat_print()
 
