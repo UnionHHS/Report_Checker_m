@@ -511,6 +511,8 @@ class MyApp(QWidget):
             self.stat_label[n].setText(self.stat_label[n].text() + "양호")
             self.ans[n] = "양호"
             # print(self.ans)
+        self.yes_button[n].setStyleSheet('color:blue')
+        self.no_button[n].setStyleSheet('')
         self.stat_print()
 
     def n_reg(self, n):
@@ -554,6 +556,8 @@ class MyApp(QWidget):
             self.stat_label[n].setText(self.stat_label[n].text() + "취약")
             self.ans[n] = "취약"
             # print(self.ans)
+        self.no_button[n].setStyleSheet("color:red")
+        self.yes_button[n].setStyleSheet("")
         self.stat_print()
 
     def save_b(self):
