@@ -58,6 +58,20 @@ class script_modify(QDialog):
         self.sc_save_b.released.connect(self.save_script)
         self.sc_cancel_b = QPushButton("취소")
         self.sc_cancel_b.released.connect(self.cancel_script)
+        
+        self.sa_la = QLabel("저장 위치")
+        self.sa_tb = QLineEdit()
+        self.sa_tb.setText(self.scripts["저장경로"])
+        self.sa_tb.setReadOnly(True)
+        self.sa_db = QPushButton("폴더 선택")
+        self.sa_db.released.connect(self.folder_select)
+        
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.sa_la)
+        hbox.addWidget(self.sa_tb)
+        hbox.addWidget(self.sa_db)
+        
 
         self.advi_label = QLabel("* 를 괄호 묶듯 입력할시 추가 입력 가능 (7번 항목 참고)")
 
@@ -68,12 +82,22 @@ class script_modify(QDialog):
         gridl.addWidget(self.script_select, 2, 0, 1, 6)
         gridl.addWidget(self.text_editor, 3, 0, 3, 6)
         gridl.addWidget(self.advi_label, 6, 0, 1, 1)
-        gridl.addWidget(self.sc_save_b, 6, 4, 1, 1)
-        gridl.addWidget(self.sc_cancel_b, 6, 5, 1, 1)
+        gridl.addLayout(hbox, 7,0,1,4)
+        gridl.addWidget(self.sc_save_b, 7, 4, 1, 1)
+        gridl.addWidget(self.sc_cancel_b, 7, 5, 1, 1)
 
         self.setLayout(gridl)
         self.setFixedSize(550, 300)
         self.show()
+
+    def folder_select(self):
+        fold = QFileDialog.getExistingDirectory(self, "저장할 폴더를 선택해주세요.")
+        # print(fold)
+        self.sa_tb.setText(fold)
+        self.scripts['저장경로'] = fold
+
+        with open("./script.json",'w',encoding="utf-8") as f:
+            json.dump(self.scripts,f)
 
     def type_Check(self):
         self.script_select.clear()
@@ -303,7 +327,7 @@ class MyApp(QWidget):
         self.clip_ck_box = QCheckBox("안내글")
         self.clip_ck_box.toggle()
 
-        self.change_script = QPushButton("복사 문구 수정")
+        self.change_script = QPushButton("문구 및 설정변경")
         self.change_script.released.connect(self.script_change)
 
         vaccine_text = QLabel("사용중인 백신(수동 입력시 ,으로 구분): ")
