@@ -169,12 +169,12 @@ class script_modify(QDialog):
                 if not os.path.isfile("./script.json"):
                     print("파일 생성")
                     with open("./script.json", "w", encoding="utf-8") as f:
-                        json.dump(self.temp, f)
+                        json.dump(self.temp, f, ensure_ascii=False, indent=4)
                 else:
                     with open("./script_bak.json", "w", encoding="utf-8") as f:
-                        json.dump(self.scripts, f)
+                        json.dump(self.scripts, f, ensure_ascii=False, indent=4)
                     with open("./script.json", "w", encoding="utf-8") as f:
-                        json.dump(self.temp, f)
+                        json.dump(self.temp, f, ensure_ascii=False, indent=4)
                 self.work = True
                 self.close()
 
@@ -257,7 +257,7 @@ class MyApp(QWidget):
                 
                 try:
                     with open("./script.json", "w", encoding="utf-8") as f:
-                        json.dump(script_temp, f)
+                        json.dump(script_temp, f,ensure_ascii=False, indent=4)
                 except:
                     pass
                         # json.dump(f, script_temp, ensure_ascii=False)
