@@ -43,8 +43,12 @@ class script_modify(QDialog):
 
         self.scripts = self.script_init()
 
-        for i in self.scripts.keys():
-            self.type_selector.addItem(i)
+        # for i in self.scripts.keys():
+            # self.type_selector.addItem(i)
+        # self.type_selector.
+
+        self.type_selector.addItem('양호')
+        self.type_selector.addItem('취약')
 
         self.changed = []
 
@@ -535,8 +539,10 @@ class MyApp(QWidget):
             self.stat_label[n].setText(self.stat_label[n].text() + "양호")
             self.ans[n] = "양호"
             # print(self.ans)
-        self.yes_button[n].setStyleSheet('color:#0077FF')
+        self.yes_button[n].setStyleSheet('color:#0077FF;font-weight:bold')
+        # self.yes_button[n].setBold(True)
         self.no_button[n].setStyleSheet('')
+        # self.no_button[n].setBold(False)
         self.stat_print()
 
     def n_reg(self, n):
@@ -580,8 +586,10 @@ class MyApp(QWidget):
             self.stat_label[n].setText(self.stat_label[n].text() + "취약")
             self.ans[n] = "취약"
             # print(self.ans)
-        self.no_button[n].setStyleSheet("color:red")
+        self.no_button[n].setStyleSheet("color:red;font-weight:bold")
+        # self.no_button[n].setBold(True)
         self.yes_button[n].setStyleSheet("")
+        # self.yes_button[n].setBold(False)
         self.stat_print()
 
     def save_b(self):
