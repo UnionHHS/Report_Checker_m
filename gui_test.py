@@ -523,6 +523,7 @@ class MyApp(QWidget):
         self.seq_confirm.setEnabled(True)
         self.any_data.setReadOnly(False)
         self.any_data.setEnabled(False)
+        self.any_data.setText("")
         for i in self.yes_button:
             i.setStyleSheet("")
             i.setEnabled(False)
