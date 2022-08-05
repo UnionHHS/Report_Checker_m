@@ -253,6 +253,7 @@ class MyApp(QWidget):
                         "취약 : 구글 2단계 인증 설정이 되어있지 않아 취약합니다.\n\n구글 2단계 인증을 하면 구글계정의 사용 내역 등 개인정보들이 보다 안전하게 관리될 수 있으니 설정하여 사용하시는 것을 권고 드립니다.\n\n(접근 방법 : 설정 -> Google -> Google 계정 관리 -> 보안 탭 -> 2단계 인증 -> 활성화 진행)",
                     ],
                     "저장경로": windows_user_name + "/Desktop",
+                    "NFSF" : "N",
                 }
                 
                 try:
@@ -313,7 +314,7 @@ class MyApp(QWidget):
         self.save = QPushButton("보고서 저장")
         self.save.released.connect(self.save_b)
 
-        self.reset = QPushButton("리셋")
+        self.reset = QPushButton("내용 지우기")
         self.reset.released.connect(self.reset_press)
 
         data_label = QLabel("데이터 입력")
@@ -330,6 +331,19 @@ class MyApp(QWidget):
 
         self.clip_ck_box = QCheckBox("안내글")
         self.clip_ck_box.toggle()
+
+        self.file_ck = QCheckBox("파일만저장")
+        self.file_ck.stateChanged.connect(self.NFSF_stat)
+        try:
+            if self.scripts['NFSF'] == 'Y':
+                self.clip_ck_box.toggle()
+        except KeyError:
+            self.scripts["NFSF"] = "N"
+            with open('./script.json', encoding='utf-8') as f:
+                scripts = json.load(f)
+            scripts['NFSF'] = "N"
+            with open('./script.json', 'w', encoding='utf-8') as f:
+                json.dump(scripts, f, ensure_ascii=False, indent=4)
 
         self.change_script = QPushButton("문구 및 설정변경")
         self.change_script.released.connect(self.script_change)
@@ -389,16 +403,16 @@ class MyApp(QWidget):
         self.grid.addWidget(data_label, 0, 5, alignment=Qt.AlignCenter)
         self.grid.addWidget(self.any_confirm, 0, 6)
 
-        self.grid.addWidget(self.save, 10, 5)
-        self.grid.addWidget(self.reset, 10, 6)
-
+        self.grid.addWidget(self.save, 10, 6)
+        self.grid.addWidget(self.reset, 10, 5)
+        self.grid.addWidget(self.file_ck,8,6)
         self.grid.addWidget(self.any_data, 1, 4, 7, 3)
 
         self.grid.addWidget(self.change_script, 0, 4, 1, 1)
         self.grid.addLayout(self.hbox1,10,0,1,4)
         # grid.addWidget(self.vaccine_used,10,1,1,2)
         self.grid.addWidget(self.install_vaccine,10,4)
-        self.grid.addWidget(self.stat_now, 8, 4, 1, 3, alignment=Qt.AlignCenter)
+        self.grid.addWidget(self.stat_now, 8, 4, 1, 2, alignment=Qt.AlignCenter)
 
         for x in range(1, len(self.stat_label) + 1):
             self.grid.addWidget(self.stat_label[x - 1], x, 0)
@@ -435,6 +449,22 @@ class MyApp(QWidget):
         # self.resize(width=500)
         self.setFixedSize(800, 350)
         self.show()
+
+    def NFSF_stat(self):
+        if self.file_ck.isChecked():
+            self.scripts["NFSF"] = "Y"
+            with open('./script.json', encoding='utf-8') as f:
+                scripts = json.load(f)
+            scripts['NFSF'] = "Y"
+            with open('./script.json', 'w', encoding='utf-8') as f:
+                json.dump(scripts, f, ensure_ascii=False, indent=4)
+        else:
+            self.scripts["NFSF"] = "N"
+            with open('./script.json', encoding='utf-8') as f:
+                scripts = json.load(f)
+            scripts['NFSF'] = "N"
+            with open('./script.json', 'w', encoding='utf-8') as f:
+                json.dump(scripts, f, ensure_ascii=False, indent=4)
 
     def list_to_text(self):
         # print(self.vaccine_list.currentText())
@@ -494,8 +524,10 @@ class MyApp(QWidget):
         self.any_data.setReadOnly(False)
         self.any_data.setEnabled(False)
         for i in self.yes_button:
+            self.yes_button[n].setStyleSheet("")
             i.setEnabled(False)
         for i in self.no_button:
+            self.no_button[n].setStyleSheet('')
             i.setEnabled(False)
         # self.vaccine_used.setEnabled(False)
 
@@ -507,17 +539,17 @@ class MyApp(QWidget):
         # else:
             # self.vaccine_list.setCurrentIndex(0)
 
-        # # self.vaccine_used.setText("")
-        # for i in self.stat_label:
-        #     if "취약" in i.text():
-        #         temp = i.text().replace("취약", "")
-        #         i.setText(temp)
-        #     elif "양호" in i.text():
-        #         temp = i.text().replace("양호", "")
-        #         i.setText(temp)
-        # self.ans = ["", "", "", "", "", "", "", ""]
+        self.vaccine_used.setText("")
+        for i in self.stat_label:
+            if "취약" in i.text():
+                temp = i.text().replace("취약", "")
+                i.setText(temp)
+            elif "양호" in i.text():
+                temp = i.text().replace("양호", "")
+                i.setText(temp)
+        self.ans = ["", "", "", "", "", "", "", ""]
 
-        # self.stat_print()
+        self.stat_print()
 
     def y_reg(self, n):
         # self.update()
@@ -647,7 +679,7 @@ class MyApp(QWidget):
                 # 안드로이드 버전 / 모델 번호 / 제조사 / 통신사
                 if not u_data:
                     QMessageBox.about(
-                        self, "주의", "정상적인 애니서포트 데이터가 아닙니다.\n리셋후 다시 입력하여 주십시오."
+                        self, "주의", "정상적인 애니서포트 데이터가 아닙니다.\n확인 후 다시 입력하여 주십시오."
                     )
                     return 1
 
@@ -698,7 +730,7 @@ class MyApp(QWidget):
                         text.bold = True
                         text.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
 
-                windows_user_name = os.path.expanduser("~")
+                # windows_user_name = os.path.expanduser("~")
 
                 origin_locate = os.getcwd()
 
@@ -708,21 +740,21 @@ class MyApp(QWidget):
                 tm = time.localtime(time.time())
 
                 date = (str(tm.tm_year)[2:] + str(tm.tm_mon).zfill(2) + str(tm.tm_mday).zfill(2))
-
-                if not os.path.isdir(date):
-                    os.mkdir(date)
-                else:
-                    pass
-
-                os.chdir("./" + date)
-                try:
-                    if not os.path.isdir(self.seq_num.split("-")[1]):
-                        os.mkdir(self.seq_num.split("-")[1])
-                        # print(1)
+                if not self.file_ck.isChecked():
+                    if not os.path.isdir(date):
+                        os.mkdir(date)
                     else:
                         pass
-                except:
-                    pass
+
+                    os.chdir("./" + date)
+                    try:
+                        if not os.path.isdir(self.seq_num.split("-")[1]):
+                            os.mkdir(self.seq_num.split("-")[1])
+                            # print(1)
+                        else:
+                            pass
+                    except:
+                        pass
 
                 try:
                     doc.save(f"./" + self.seq_num.split("-")[1] + "/" + self.seq_num + ".docx")
