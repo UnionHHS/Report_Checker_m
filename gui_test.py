@@ -447,7 +447,7 @@ class MyApp(QWidget):
         self.no_button[7].released.connect(lambda: self.n_reg(7))
 
         # self.resize(width=500)
-        self.setFixedSize(800, 350)
+        self.setFixedSize(810, 350)
         self.show()
 
     def NFSF_stat(self):
@@ -523,6 +523,7 @@ class MyApp(QWidget):
         self.seq_confirm.setEnabled(True)
         self.any_data.setReadOnly(False)
         self.any_data.setEnabled(False)
+        self.seq_data.setText("")
         self.any_data.setText("")
         for i in self.yes_button:
             i.setStyleSheet("")
@@ -736,33 +737,37 @@ class MyApp(QWidget):
                 origin_locate = os.getcwd()
 
                 # os.chdir(windows_user_name + "/Desktop")
-                os.chdir(self.scripts['저장경로'])
-
+                # os.chdir(self.scripts['저장경로'])
+                print(f"Save Location : {self.scripts['저장경로']}")
                 tm = time.localtime(time.time())
 
                 date = (str(tm.tm_year)[2:] + str(tm.tm_mon).zfill(2) + str(tm.tm_mday).zfill(2))
                 if not self.file_ck.isChecked():
-                    if not os.path.isdir(date):
-                        os.mkdir(date)
+                    if not os.path.isdir(f"{self.scripts['저장경로']}/{date}"):
+                        os.mkdir(f"{self.scripts['저장경로']}/{date}")
                     else:
                         pass
 
-                    os.chdir("./" + date)
+                    # os.chdir(self.scripts['저장경로']+"/" + date)
                     try:
-                        if not os.path.isdir(self.seq_num.split("-")[1]):
-                            os.mkdir(self.seq_num.split("-")[1])
+                        if not os.path.isdir(f"{self.scripts['저장경로']}/{date}/{self.seq_num.split('-')[1]}"):
+                            os.mkdir(f"{self.scripts['저장경로']}/{date}/{self.seq_num.split('-')[1]}")
+                            # os.chdir(f"{self.scripts['저장경로']}/{date}/{self.seq_num.split('-')[1]}")
                             # print(1)
                         else:
                             pass
                     except:
                         pass
+                    doc.save(f"{self.scripts['저장경로']}/{date}/{self.seq_num.split('-')[1]}/{self.seq_num}.docx")
+                else:
+                    doc.save(f"{self.scripts['저장경로']}/{self.seq_num}.docx")
 
-                try:
-                    doc.save(f"./" + self.seq_num.split("-")[1] + "/" + self.seq_num + ".docx")
-                    # print(2)
-                    # sub_file_name = self.seq_num.split('-')[1]
-                except:
-                    doc.save(f"./" + self.seq_num + ".docx")
+                # try:
+                #     doc.save(f"./" + self.seq_num.split("-")[1] + "/" + self.seq_num + ".docx")
+                #     # print(2)
+                #     # sub_file_name = self.seq_num.split('-')[1]
+                # except:
+                #     doc.save(f"./" + self.seq_num + ".docx")
 
                 os.chdir(origin_locate)
 
