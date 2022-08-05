@@ -524,10 +524,10 @@ class MyApp(QWidget):
         self.any_data.setReadOnly(False)
         self.any_data.setEnabled(False)
         for i in self.yes_button:
-            self.yes_button[n].setStyleSheet("")
+            i.setStyleSheet("")
             i.setEnabled(False)
         for i in self.no_button:
-            self.no_button[n].setStyleSheet('')
+            i.setStyleSheet('')
             i.setEnabled(False)
         # self.vaccine_used.setEnabled(False)
 
