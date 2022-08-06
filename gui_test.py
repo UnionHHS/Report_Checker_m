@@ -126,31 +126,16 @@ class script_modify(QDialog):
     def modify_text(self):
         text_temp = self.text_editor.toPlainText()
 
-        if [
-            self.type_selector.currentText(),
-            self.script_select.currentIndex(),
-        ] in self.changed or self.scripts[self.type_selector.currentText()][
-            self.script_select.currentIndex()
-        ] == self.temp[
-            self.type_selector.currentText()
-        ][
-            self.script_select.currentIndex()
-        ]:
+        if (not [self.type_selector.currentText(),self.script_select.currentIndex(),] in self.changed) and self.scripts[self.type_selector.currentText()][self.script_select.currentIndex()] == self.temp[self.type_selector.currentText()][self.script_select.currentIndex()]:
             pass
         else:
-            self.changed.append(
-                [self.type_selector.currentText(), self.script_select.currentIndex()]
-            )
+            self.changed.append([self.type_selector.currentText(), self.script_select.currentIndex()])
         if "*" in text_temp:
-            self.temp[self.type_selector.currentText()][
-                self.script_select.currentIndex()
-            ] = text_temp.split("*")
+            self.temp[self.type_selector.currentText()][self.script_select.currentIndex()] = text_temp.split("*")
             # self.scripts[self.type_selector.currentText()][self.script_select.currentIndex()]
         else:
             # self.scripts[self.type_selector.currentText()][self.script_select.currentIndex()]
-            self.temp[self.type_selector.currentText()][
-                self.script_select.currentIndex()
-            ] = text_temp
+            self.temp[self.type_selector.currentText()][self.script_select.currentIndex()] = text_temp
         # return 1
 
     def save_script(self):
@@ -162,9 +147,7 @@ class script_modify(QDialog):
                 text.append(i[0] + " | " + self.script_q[i[1]])
             texts = "\n".join(text)
             text = f"수정된 항목\n" + texts + " \n이대로 저장하시겠습니까?"
-            reply = QMessageBox.question(
-                self, "저장 안내", text, QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes
-            )
+            reply = QMessageBox.question(self, "저장 안내", text, QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
             if reply == QMessageBox.Yes:
                 if not os.path.isfile("./script.json"):
                     print("파일 생성")
@@ -187,9 +170,7 @@ class script_modify(QDialog):
                 text.append(i[0] + " | " + self.script_q[i[1]])
             texts = "\n".join(text)
             text = f"수정된 항목\n" + texts + " \n이 있습니다.\n그래도 종료하시겠습니까?"
-            reply = QMessageBox.question(
-                self, "저장 안내", text, QMessageBox.Yes | QMessageBox.No, QMessageBox.No
-            )
+            reply = QMessageBox.question(self, "저장 안내", text, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if reply == QMessageBox.Yes:
                 self.close()
 
