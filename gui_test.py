@@ -371,11 +371,11 @@ class MyApp(QWidget):
             data_label = QLabel("데이터 입력")
 
             self.any_data = QTextEdit()
-            self.any_data.setEnabled(False)
+            # self.any_data.setEnabled(False)
             # self.any_data.retrurnPressed.connect(self.return_Press)
 
             self.any_confirm = QPushButton("확인")
-            self.any_confirm.setEnabled(False)
+            # self.any_confirm.setEnabled(False)
             self.any_confirm.released.connect(self.enable_any_data)
 
             self.stat_now = QLabel("양호 : 0 | 취약 : 0")
@@ -557,13 +557,23 @@ class MyApp(QWidget):
             text = self.seq_data.text()
             temp = seq_re.match(text)
             if temp:
-                self.seq_data.setEnabled(False)
-                self.seq_confirm.setEnabled(False)
-                self.any_data.setEnabled(True)
-                self.any_confirm.setEnabled(True)
+                # self.seq_data.setEnabled(False)
+                # self.seq_confirm.setEnabled(False)
+                # self.any_data.setEnabled(True)
+                # self.any_confirm.setEnabled(True)
                 self.seq_num = text
                 self.running_seq[0] = "y"
+                self.seq_confirm.setStyleSheet('font-weight:bold')
                 log_writer('I',"Req_num Checked, AnySupport Data Text Box Activated")
+                if self.running_seq[0] == 'y' and self.running_seq[1] == 'y':
+                    for i in self.yes_button:
+                        i.setEnabled(True)
+                    for i in self.no_button:
+                        i.setEnabled(True)
+                    self.vaccine_used.setEnabled(True)
+                    # self.install_vaccine.setEnabled(True)
+                    self.vaccine_list.setEnabled(True)
+                    log_writer('I','Both Check Complete Activate Check Btn')
                 # print(self.seq_num)
             else:
                 log_writer('W',"Req_num Not Found")
@@ -582,27 +592,32 @@ class MyApp(QWidget):
                 log_writer('W',"Don't Check Complete AnySupport Data")
                 QMessageBox.about(self, "알림", f"애니서포트 에서 복사된 데이터가 인식되지 않습니다.\n확인하여주세요.")
             else:
-                self.any_data.setReadOnly(True)
-                self.any_confirm.setEnabled(False)
-                for i in self.yes_button:
-                    i.setEnabled(True)
-                for i in self.no_button:
-                    i.setEnabled(True)
-                self.vaccine_used.setEnabled(True)
-                # self.install_vaccine.setEnabled(True)
-                self.vaccine_list.setEnabled(True)
-            self.running_seq[1] = "y"
-            log_writer('I',"AnySupport Data In")
+                log_writer('I',"AnySupport Data In")
+                # self.any_data.setReadOnly(True)
+                # self.any_confirm.setEnabled(False)
+                self.running_seq[1] = "y"
+                self.any_confirm.setStyleSheet('font-weight:bold')
+                if self.running_seq[0] == 'y' and self.running_seq[1] == 'y':
+                    for i in self.yes_button:
+                        i.setEnabled(True)
+                    for i in self.no_button:
+                        i.setEnabled(True)
+                    self.vaccine_used.setEnabled(True)
+                    # self.install_vaccine.setEnabled(True)
+                    self.vaccine_list.setEnabled(True)
+                    log_writer('I','Both Check Complete Activate Check Btn')
+            
+            
         except Exception as e:
             log_writer('E',"AntSupport Data TextBox Init Error", e)
 
     def reset_press(self):
         log_writer('I',"User Input Data Reset")
         try:
-            self.seq_data.setEnabled(True)
-            self.seq_confirm.setEnabled(True)
-            self.any_data.setReadOnly(False)
-            self.any_data.setEnabled(False)
+            # self.seq_data.setEnabled(True)
+            # self.seq_confirm.setEnabled(True)
+            # self.any_data.setReadOnly(False)
+            # self.any_data.setEnabled(False)
             self.seq_data.setText("")
             self.any_data.setText("")
             for i in self.yes_button:
@@ -630,8 +645,14 @@ class MyApp(QWidget):
                     temp = i.text().replace("양호", "")
                     i.setText(temp)
             self.ans = ["", "", "", "", "", "", "", ""]
+            self.running_seq[0] = ''
+            self.running_seq[1] = ''
+
+            self.seq_confirm.setStyleSheet('')
+            self.any_confirm.setStyleSheet('')
 
             self.stat_print()
+            log_writer('I',"User Input Data Reset Complete")
         except Exception as e:
             log_writer('E',"Reset Module Error", e)
 
@@ -894,10 +915,10 @@ class MyApp(QWidget):
                         time.sleep(0.01)
 
                     log_writer('I',"Default Status Reset")
-                    self.seq_data.setEnabled(True)
-                    self.seq_confirm.setEnabled(True)
-                    self.any_data.setReadOnly(False)
-                    self.any_data.setEnabled(False)
+                    # self.seq_data.setEnabled(True)
+                    # self.seq_confirm.setEnabled(True)
+                    # self.any_data.setReadOnly(False)
+                    # self.any_data.setEnabled(False)
                     for i in self.yes_button:
                         i.setEnabled(False)
                     for i in self.no_button:
@@ -913,7 +934,8 @@ class MyApp(QWidget):
                     # try:
                     self.hbox1.itemAt(1).widget().setParent(None)
                     self.hbox1.addWidget(self.vaccine_list)
-
+                    self.running_seq[0] = ''
+                    self.running_seq[1] = ''
                     self.stat_print()
                 else:
                     pass
