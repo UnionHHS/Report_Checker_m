@@ -9,12 +9,12 @@ import re
 from clipboard import copy
 import json
 import zipfile
-
+import traceback
+import ctypes
 # global check_event
 global scripts
 
 def log_writer(types, data, Except=None):
-    import traceback
     tm = time.localtime(time.time())
     date = (str(tm.tm_year)[2:] + str(tm.tm_mon).zfill(2) + str(tm.tm_mday).zfill(2))
     times = f"{tm.tm_year}-{str(tm.tm_mon).zfill(2)}-{str(tm.tm_mday).zfill(2)} {str(tm.tm_hour).zfill(2)}:{str(tm.tm_min).zfill(2)}:{str(tm.tm_sec).zfill(2)}"
@@ -22,11 +22,11 @@ def log_writer(types, data, Except=None):
         with open(f"./log/log_{date}.log",'a',encoding='utf8') as f:
             f.writelines(f"{times} = [{types}] {data}\n")
             f.writelines("---------ERROR---------\n")
-            f.writelines(traceback.print_exc())
+            f.writelines(traceback.format_exc())
             f.writelines("-----------------------\n")
             f.writelines("Plz Report Developer\n")
         with zipfile.ZipFile(f'./log_file.zip','w') as zf:
-            for folder, sfolder, files in os.wirk('./log'):
+            for folder, sfolder, files in os.walk('./log'):
                 for i in files:
                     zf.write(os.path.join(folder, i), os.path.relpath(os.path.join(folder, i), './log'), compress_type = zipfile.ZIP_DEFLATED)
     else:
@@ -49,6 +49,8 @@ class script_modify(QDialog):
                 scripts = json.load(f)
         except Exception as e:
             log_writer('E','Load Script Error', e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
         return scripts
 
@@ -123,6 +125,8 @@ class script_modify(QDialog):
             self.show()
         except Exception as e:
             log_writer('E','Script Editor Init Error', e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def folder_select(self):
         log_writer('D',"Folder Select Btn Clicked")
@@ -137,6 +141,8 @@ class script_modify(QDialog):
                 log_writer('I',f"Folder Selected {fold}")
         except Exception as e:
             log_writer('E', 'Folder Selector Error', e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def type_Check(self):
         log_writer('D',"Type Select")
@@ -146,6 +152,8 @@ class script_modify(QDialog):
                 self.script_select.addItem(i)
         except Exception as e:
             log_writer('E', 'Type Checker Error', e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def script_read(self):
         log_writer('D',"Read To Scripts")
@@ -164,6 +172,8 @@ class script_modify(QDialog):
                 )
         except Exception as e:
             log_writer('E', 'Script Reader Error', e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
         # print(types, self.script_select.currentIndex())
 
     def modify_text(self):
@@ -183,6 +193,8 @@ class script_modify(QDialog):
                 self.temp[self.type_selector.currentText()][self.script_select.currentIndex()] = text_temp
         except Exception as e:
             log_writer('E', 'Script Modify Error', e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
         # return 1
 
     def save_script(self):
@@ -212,6 +224,8 @@ class script_modify(QDialog):
                     self.close()
         except Exception as e:
             log_writer('E',"Scripts Save Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def cancel_script(self):
         log_writer('I',"Script Save Cancel")
@@ -230,6 +244,8 @@ class script_modify(QDialog):
                     self.close()
         except Exception as e:
             log_writer('E',"Scripts Cancel Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
 
 class MyApp(QWidget):
@@ -240,6 +256,8 @@ class MyApp(QWidget):
             self.initUI()
         except Exception as e:
             log_writer('E',"Init Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
     # def title_renewer(self):
     #     while True:
     #         if check_event.isSet():
@@ -260,6 +278,8 @@ class MyApp(QWidget):
             self.stat_now.setText(f"양호 : {good_c} | 취약 : {bad_c}")
         except Exception as e:
             log_writer('E',"Status Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def script_init(self):
         log_writer('I',"Scripts Init")
@@ -328,6 +348,8 @@ class MyApp(QWidget):
                     json.dump(self.scripts,f)
         except Exception as e:
             log_writer('E',"Scripts Init Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def script_change(self):
         log_writer('D',"Script Change Run")
@@ -503,6 +525,8 @@ class MyApp(QWidget):
             self.show()
         except Exception as e:
             log_writer('E',"Mobile Report Program Init Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def NFSF_stat(self):
         log_writer('D',"File Type Check")
@@ -523,6 +547,8 @@ class MyApp(QWidget):
                     json.dump(scripts, f, ensure_ascii=False, indent=4)
         except Exception as e:
             log_writer('E',"File Save Type Check Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def list_to_text(self):
         # print(self.vaccine_list.currentText())
@@ -536,6 +562,8 @@ class MyApp(QWidget):
                 log_writer('D',"Change Vaccine List To TextBox")
         except Exception as e:
             log_writer('E',"Change Vaccine List Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def text_to_list(self):
         log_writer('D',"Check Vaccine TextBox To List")
@@ -547,6 +575,8 @@ class MyApp(QWidget):
             log_writer('D',"Change Vaccine TextBox To List")
         except Exception as e:
             log_writer('E',"Change Vaccine List Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def return_Press(self):
         # log_writer('I',"Main Modu")
@@ -580,6 +610,8 @@ class MyApp(QWidget):
                 QMessageBox.about(self, "알림", f"예약번호의 데이터가 감지되지 않습니다.\n예약번호를 확인해주세요.")
         except Exception as e:
             log_writer('E',"Enter Module Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def enable_any_data(self):
         # self.any_data.setEnabled(False)
@@ -606,10 +638,10 @@ class MyApp(QWidget):
                     # self.install_vaccine.setEnabled(True)
                     self.vaccine_list.setEnabled(True)
                     log_writer('I','Both Check Complete Activate Check Btn')
-            
-            
         except Exception as e:
             log_writer('E',"AntSupport Data TextBox Init Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def reset_press(self):
         log_writer('I',"User Input Data Reset")
@@ -655,6 +687,8 @@ class MyApp(QWidget):
             log_writer('I',"User Input Data Reset Complete")
         except Exception as e:
             log_writer('E',"Reset Module Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def y_reg(self, n):
         # self.update()
@@ -686,6 +720,8 @@ class MyApp(QWidget):
             self.stat_print()
         except Exception as e:
             log_writer('E',"Good Report Module Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def n_reg(self, n):
         # self.update()
@@ -738,6 +774,8 @@ class MyApp(QWidget):
             self.stat_print()
         except Exception as e:
             log_writer('E',"Bad Report Module Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
     def save_b(self):
         log_writer('I',"Save Sequence Start")
@@ -941,6 +979,8 @@ class MyApp(QWidget):
                     pass
         except Exception as e:
             log_writer('E',"Mobile Report Save Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
 
 
 if __name__ == "__main__":
@@ -955,4 +995,6 @@ if __name__ == "__main__":
         sys.exit(app.exec_())
     except Exception as e:
         log_writer('E',"Main Module Load Error", e)
+        ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+        sys.exit(1000)
     # check_event.set()
