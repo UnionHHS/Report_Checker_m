@@ -591,7 +591,7 @@ class MyApp(QWidget):
                 # self.seq_confirm.setEnabled(False)
                 # self.any_data.setEnabled(True)
                 # self.any_confirm.setEnabled(True)
-                self.seq_num = text
+                self.seq_num = temp.group()
                 self.running_seq[0] = "y"
                 self.seq_confirm.setStyleSheet('font-weight:bold')
                 log_writer('I',"Req_num Checked, AnySupport Data Text Box Activated")
