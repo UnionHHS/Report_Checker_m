@@ -990,7 +990,6 @@ if __name__ == "__main__":
         log_writer('I',"Main Module Load")
         app = QApplication(sys.argv)
         ex = MyApp()
-        check_event = Event()
 
         sys.exit(app.exec_())
     except Exception as e:
