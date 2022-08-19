@@ -487,7 +487,7 @@ class MyApp(QWidget):
             self.ck_tx_la = QPushButton('점검항목')
             self.ck_tx_la.released.connect(self.cp_cklist)
             self.ck_bt_la1 = QLabel('    점검결과')
-            self.ck_bt_la2 = QLabel('  조치여부')
+            self.ck_bt_la2 = QLabel(' 조치여부')
 
             self.grids = QGridLayout()
             self.grids.addWidget(QLabel(),0,0,1,1)
