@@ -496,6 +496,8 @@ class MyApp(QWidget):
             self.grids.addWidget(self.ck_bt_la1, 0, 0, 1, 1, alignment=Qt.AlignCenter)
             self.grids.addWidget(self.ck_bt_la2, 0, 1, 1, 1,  alignment=Qt.AlignCenter)
 
+            self.grids.setContentMargins(0,0,0,0)
+
             self.running_seq = ["","",]
             question = [
                 "1. 백신 설치 여부 확인 : ",
