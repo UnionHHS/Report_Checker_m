@@ -11,7 +11,7 @@ import json
 import zipfile
 import traceback
 import ctypes
-# global check_event
+
 global scripts
 
 def log_writer(types, data, Except=None):
@@ -73,12 +73,10 @@ class script_modify(QDialog):
 
             self.scripts = self.script_init()
 
-            # for i in self.scripts.keys():
-                # self.type_selector.addItem(i)
-            # self.type_selector.
-
             self.type_selector.addItem('양호')
             self.type_selector.addItem('취약')
+            self.type_selector.addItem('조치후_양호')
+            self.type_selector.addItem('조치후_취약')
 
             self.changed = []
 
@@ -132,7 +130,6 @@ class script_modify(QDialog):
         log_writer('D',"Folder Select Btn Clicked")
         try:
             fold = QFileDialog.getExistingDirectory(self, "저장할 폴더를 선택해주세요.")
-            # print(fold)
             self.sa_tb.setText(fold)
             self.scripts['저장경로'] = fold
             
@@ -174,7 +171,6 @@ class script_modify(QDialog):
             log_writer('E', 'Script Reader Error', e)
             ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
             sys.exit(1000)
-        # print(types, self.script_select.currentIndex())
 
     def modify_text(self):
         log_writer('D',"Modified Text")
@@ -187,9 +183,7 @@ class script_modify(QDialog):
                 self.changed.append([self.type_selector.currentText(), self.script_select.currentIndex()])
             if "*" in text_temp:
                 self.temp[self.type_selector.currentText()][self.script_select.currentIndex()] = text_temp.split("*")
-                # self.scripts[self.type_selector.currentText()][self.script_select.currentIndex()]
             else:
-                # self.scripts[self.type_selector.currentText()][self.script_select.currentIndex()]
                 self.temp[self.type_selector.currentText()][self.script_select.currentIndex()] = text_temp
         except Exception as e:
             log_writer('E', 'Script Modify Error', e)
@@ -258,17 +252,6 @@ class MyApp(QWidget):
             log_writer('E',"Init Error", e)
             ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
             sys.exit(1000)
-    # def title_renewer(self):
-    #     while True:
-    #         if check_event.isSet():
-    #             break
-    #         now = QDate.currentDate()
-    #         # print(now.toString(Qt.DefaultLocaleLongDate))
-    #         times = QTime.currentTime()
-    #         # print(time.toString(Qt.DefaultLocaleLongDate))
-    #         # print(self.title+now.toString(Qt.DefaultLocaleLongDate)+" | "+times.toString(Qt.DefaultLocaleLongDate) + " )")
-    #         self.setWindowTitle(self.title+now.toString(Qt.DefaultLocaleLongDate)+" | "+times.toString(Qt.DefaultLocaleLongDate) + " )")
-    #         time.sleep(1)
 
     def stat_print(self):
         log_writer('D',"Print Status")
@@ -320,6 +303,15 @@ class MyApp(QWidget):
                             ],
                             "취약 : 구글 2단계 인증 설정이 되어있지 않아 취약합니다.\n\n구글 2단계 인증을 하면 구글계정의 사용 내역 등 개인정보들이 보다 안전하게 관리될 수 있으니 설정하여 사용하시는 것을 권고 드립니다.\n\n(접근 방법 : 설정 -> Google -> Google 계정 관리 -> 보안 탭 -> 2단계 인증 -> 활성화 진행)",
                         ],
+                        "조치후_양호" : [
+                            "1번(백신 설치 여부 확인)과 2번항목(실시간 감지 및 최신 업데이트 여부 확인) 의 경우 점검전 설치가 되어있지 않았으나, 고객님께서 설치를 진행해주셨고, 실시간 감지 또한 활성화 되어 보다 안전하게 이용하실수 있는점 참고 부탁드립니다.",
+                            "1번(백신 설치 여부 확인) 의 경우 설치가 되어있어 양호하셨으나, 2번항목(실시간 감지 및 최신 업데이트 여부 확인) 이 취약한 부분이 있으셨습니다. 다만 이부분의 경우 고객님꼐서 모두 조치 진행해주셔서 양호하신것으로 확인됩니다.",
+                        ],
+                        "조치후_취약" : [
+                            "현재 고객님 스마트폰에는 백신설치가 되어있지 않아 설치여부를 여쭈어 보았으나 해당부분 고객님꼐서 원치 않으신점을 고려하여 해당부분 설치 하지 않으셨습니다.\n고객님께서 좀더 안전하게 사용하시기 위해서 구글 플레이 스토어 에서 '모바일 백신' 검색후 설치 진행하신뒤 권한 까지 부여 하셔서 사용하시는것을 권고드랍니다.",
+                            "현재 고객님께서 사용중이신 스마트폰에 백신 어플이 설치되어 있으나, 고객님께서 실시간 감지 활성화 및 업데이트 조치를 원하시지 않아, 해당부분 조치하지 않고 넘어가는점 양해 부탁드립니다.\n또한 보다 안전하게 사용하시려면 고객님께서 사용중이신 백신어플의 업데이트 유무를 확인하고 업데이트를 진행한뒤, 실시간 감지 기능까지 활성화 하여 사용해주시면 보다 안전하게 이용하실수 있는점 참고 부탁 드리겠습니다."
+                        ],
+
                         "저장경로": windows_user_name + "/Desktop",
                         "NFSF" : "N",
                         "CLIP" : "Y",
@@ -340,6 +332,28 @@ class MyApp(QWidget):
                     self.scripts = json.load(f)
             self.good_text = self.scripts["양호"]
             self.bad_text = self.scripts["취약"]
+            try:
+                self.afterg_text = self.scripts["조치후_양호"]
+                self.afterb_test = self.scripts["조치후_취약"]
+            except KeyError:
+                log_writer("W", "Update Json Data Reflesh")
+                with open("./script.json", encoding="utf-8") as f:
+                    data = json.load(f)
+                data["조치후_양호"] = [
+                            "1번(백신 설치 여부 확인)과 2번항목(실시간 감지 및 최신 업데이트 여부 확인) 의 경우 점검전 설치가 되어있지 않았으나, 고객님께서 설치를 진행해주셨고, 실시간 감지 또한 활성화 되어 보다 안전하게 이용하실수 있는점 참고 부탁드립니다.",
+                            "1번(백신 설치 여부 확인) 의 경우 설치가 되어있어 양호하셨으나, 2번항목(실시간 감지 및 최신 업데이트 여부 확인) 이 취약한 부분이 있으셨습니다.\n다만 이부분의 경우 고객님꼐서 모두 조치 진행해주셔서 양호하신것으로 확인됩니다.",
+                        ]
+                data["조치후_취약"] = [
+                            "현재 고객님 스마트폰에는 백신설치가 되어있지 않아 설치여부를 여쭈어 보았으나 해당부분 고객님꼐서 원치 않으신점을 고려하여 해당부분 설치 하지 않으셨습니다.\n고객님께서 좀더 안전하게 사용하시기 위해서 구글 플레이 스토어 에서 '모바일 백신' 검색후 설치 진행하신뒤 권한 까지 부여 하셔서 사용하시는것을 권고드랍니다.",
+                            "현재 고객님께서 사용중이신 스마트폰에 백신 어플이 설치되어 있으나, 고객님께서 실시간 감지 활성화 및 업데이트 조치를 원하시지 않아, 해당부분 조치하지 않고 넘어가는점 양해 부탁드립니다.\n또한 보다 안전하게 사용하시려면 고객님께서 사용중이신 백신어플의 업데이트 유무를 확인하고 업데이트를 진행한뒤, 실시간 감지 기능까지 활성화 하여 사용해주시면 보다 안전하게 이용하실수 있는점 참고 부탁 드리겠습니다.",
+                        ]
+                with open("./script.json", 'w', encoding="utf-8") as f:
+                    json.dump(data, f, ensure_ascii=False, indent=4)
+                
+                self.scripts = data
+
+                self.afterg_text = self.scripts["조치후_양호"]
+                self.afterb_test = self.scripts["조치후_취약"]
             try:
                 self.save_locate = self.scripts["저장경로"]
             except KeyError:
@@ -365,12 +379,6 @@ class MyApp(QWidget):
         log_writer('I',"Mobile Report Program Init")
         try:
             self.script_init()
-
-            # os_type = platform.system()
-            # if os_type == 'Windows':
-            #     self.title = "보고서 생성기 ( "
-            #     Thread(target=self.title_renewer).start()
-            # else:
             self.setWindowTitle("보고서 생성기")
             self.grid = QGridLayout()
             self.setLayout(self.grid)
@@ -394,11 +402,8 @@ class MyApp(QWidget):
             data_label = QLabel("데이터 입력")
 
             self.any_data = QTextEdit()
-            # self.any_data.setEnabled(False)
-            # self.any_data.retrurnPressed.connect(self.return_Press)
 
             self.any_confirm = QPushButton("확인")
-            # self.any_confirm.setEnabled(False)
             self.any_confirm.released.connect(self.enable_any_data)
 
             self.stat_now = QLabel("양호 : 0 | 취약 : 0")
@@ -437,7 +442,7 @@ class MyApp(QWidget):
             vaccine_text = QLabel("사용중인 백신(수동 입력시 ,으로 구분): ")
 
             vac_list = ['미설치','V3 Mobile Security', '알약M', '네이버 백신', '모바일가드', '기타...']
-
+            self.stat_list = [' ','양호','취약']
             self.vaccine_list = QComboBox()
             for i in vac_list:
                 self.vaccine_list.addItem(i)
@@ -445,7 +450,6 @@ class MyApp(QWidget):
             self.vaccine_list.setEnabled(False)
 
             self.vaccine_used = QLineEdit("")
-            # self.vaccine_used.setEnabled(False)
 
             self.install_vaccine = QPushButton("백신 리스트로")
             self.install_vaccine.setEnabled(False)
@@ -461,8 +465,11 @@ class MyApp(QWidget):
             self.hbox1.addWidget(self.vaccine_list)
             # hbox1.addWidget(self.vaccine_used)
 
+            self.ck_tx_la = QLabel('점검내용')
+            self.ck_bt_la1 = QLabel('조치전')
+            self.ck_bt_la2 = QLabel('조치후')
+
             self.running_seq = ["","",]
-            # m_label2 = QLabel("Test2 : ")
             question = [
                 "1. 백신 설치 여부 확인 : ",
                 "2. 백신 최신 업데이트 및 실시간 감시 작동 확인 : ",
@@ -477,8 +484,8 @@ class MyApp(QWidget):
             self.af_ans = ["",""]
             self.stat_label = [QLabel(x) for x in question]
 
-            self.yes_button = [QPushButton("양호") for _ in range(len(question))]
-            self.no_button = [QPushButton("취약") for _ in range(len(question))]
+            self.yes_button = [QPushButton(self.stat_list[0]) for _ in range(len(question))]
+            self.no_button = [QPushButton(self.stat_list[1]) for _ in range(len(question))]
 
             self.grid.addLayout(hbox, 0, 0)
             self.grid.addWidget(self.seq_confirm, 0, 1)
@@ -486,50 +493,47 @@ class MyApp(QWidget):
             self.grid.addWidget(data_label, 0, 5, alignment=Qt.AlignCenter)
             self.grid.addWidget(self.any_confirm, 0, 6)
 
-            self.grid.addWidget(self.save, 10, 6)
-            self.grid.addWidget(self.reset, 10, 5)
-            self.grid.addWidget(self.file_ck,8,6)
-            self.grid.addWidget(self.any_data, 1, 4, 7, 3)
+            self.grid.addWidget(self.save, 11, 6)
+            self.grid.addWidget(self.reset, 11, 5)
+            self.grid.addWidget(self.file_ck,9,6)
+            self.grid.addWidget(self.any_data, 1, 4, 8, 3)
 
             self.grid.addWidget(self.change_script, 0, 4, 1, 1)
-            self.grid.addLayout(self.hbox1,10,0,1,4)
-            # grid.addWidget(self.vaccine_used,10,1,1,2)
-            self.grid.addWidget(self.install_vaccine,10,4)
-            self.grid.addWidget(self.stat_now, 8, 4, 1, 2, alignment=Qt.AlignCenter)
+            self.grid.addLayout(self.hbox1,11,0,1,4)
+            self.grid.addWidget(self.install_vaccine,11,4)
+            self.grid.addWidget(self.stat_now, 9, 4, 1, 2, alignment=Qt.AlignCenter)
+
+            self.grid.addWidget(self.ck_tx_la, 1,0,1,1, alignment=Qt.AlignCenter)
+            self.grid.addWidget(self.ck_bt_la1, 1,1,1,1, alignment=Qt.AlignCenter)
+            self.grid.addWidget(self.ck_bt_la2, 1,2,1,1, alignment=Qt.AlignCenter)
 
             for x in range(1, len(self.stat_label) + 1):
-                self.grid.addWidget(self.stat_label[x - 1], x, 0)
+                self.grid.addWidget(self.stat_label[x - 1], x+1, 0)
             for x in range(1, len(self.yes_button) + 1):
                 self.yes_button[x - 1].setEnabled(False)
-                self.grid.addWidget(self.yes_button[x - 1], x, 1)
+                self.grid.addWidget(self.yes_button[x - 1], x+1, 1)
             for x in range(1, len(self.no_button) + 1):
                 self.no_button[x - 1].setEnabled(False)
-                self.grid.addWidget(self.no_button[x - 1], x, 2)
+                self.grid.addWidget(self.no_button[x - 1], x+1, 2)
 
-            
-            # grid.addWidget(hbox1,11,1)
+            self.yes_button[0].released.connect(lambda: self.be_y_reg(0))
+            self.yes_button[1].released.connect(lambda: self.be_y_reg(1))
+            self.yes_button[2].released.connect(lambda: self.be_y_reg(2))
+            self.yes_button[3].released.connect(lambda: self.be_y_reg(3))
+            self.yes_button[4].released.connect(lambda: self.be_y_reg(4))
+            self.yes_button[5].released.connect(lambda: self.be_y_reg(5))
+            self.yes_button[6].released.connect(lambda: self.be_y_reg(6))
+            self.yes_button[7].released.connect(lambda: self.be_y_reg(7))
 
-            # self.yes_button[0].released.connect(lambda: self.y_reg(0))
-            # self.yes_button[0].setEnabled(True)
-            self.yes_button[0].released.connect(lambda: self.y_reg(0))
-            self.yes_button[1].released.connect(lambda: self.y_reg(1))
-            self.yes_button[2].released.connect(lambda: self.y_reg(2))
-            self.yes_button[3].released.connect(lambda: self.y_reg(3))
-            self.yes_button[4].released.connect(lambda: self.y_reg(4))
-            self.yes_button[5].released.connect(lambda: self.y_reg(5))
-            self.yes_button[6].released.connect(lambda: self.y_reg(6))
-            self.yes_button[7].released.connect(lambda: self.y_reg(7))
+            self.no_button[0].released.connect(lambda: self.be_n_reg(0))
+            self.no_button[1].released.connect(lambda: self.be_n_reg(1))
+            # self.no_button[2].released.connect(lambda: self.n_reg(2))
+            # self.no_button[3].released.connect(lambda: self.n_reg(3))
+            # self.no_button[4].released.connect(lambda: self.n_reg(4))
+            # self.no_button[5].released.connect(lambda: self.n_reg(5))
+            # self.no_button[6].released.connect(lambda: self.n_reg(6))
+            # self.no_button[7].released.connect(lambda: self.n_reg(7))
 
-            self.no_button[0].released.connect(lambda: self.n_reg(0))
-            self.no_button[1].released.connect(lambda: self.n_reg(1))
-            self.no_button[2].released.connect(lambda: self.n_reg(2))
-            self.no_button[3].released.connect(lambda: self.n_reg(3))
-            self.no_button[4].released.connect(lambda: self.n_reg(4))
-            self.no_button[5].released.connect(lambda: self.n_reg(5))
-            self.no_button[6].released.connect(lambda: self.n_reg(6))
-            self.no_button[7].released.connect(lambda: self.n_reg(7))
-
-            # self.resize(width=500)
             self.setFixedSize(810, 350)
             self.show()
         except Exception as e:
@@ -539,7 +543,6 @@ class MyApp(QWidget):
 
     def CLIP_stat(self):
         log_writer('D',"ClipBoard Setting Type Check")
-        # print(self.clip_ck_box.checkState())
         try:
             if self.clip_ck_box.isChecked():
                 self.scripts["CLIP"] = "Y"
@@ -562,7 +565,6 @@ class MyApp(QWidget):
 
     def NFSF_stat(self):
         log_writer('D',"File Type Check")
-        # print(self.clip_ck_box.checkState())
         try:
             if self.file_ck.isChecked():
                 self.scripts["NFSF"] = "Y"
@@ -612,18 +614,12 @@ class MyApp(QWidget):
             sys.exit(1000)
 
     def return_Press(self):
-        # log_writer('I',"Main Modu")
-        # log_writer('I',"Req_num Checked, AnySupport Data Text Box Activated")
         log_writer('I',"Req_num Check")
         try:
             seq_re = re.compile("\d{4}\-\d{4}\-\d{5}")
             text = self.seq_data.text()
             temp = seq_re.match(text)
             if temp:
-                # self.seq_data.setEnabled(False)
-                # self.seq_confirm.setEnabled(False)
-                # self.any_data.setEnabled(True)
-                # self.any_confirm.setEnabled(True)
                 self.seq_num = temp.group()
                 self.running_seq[0] = "y"
                 self.seq_confirm.setStyleSheet('font-weight:bold')
@@ -631,13 +627,9 @@ class MyApp(QWidget):
                 if self.running_seq[0] == 'y' and self.running_seq[1] == 'y':
                     for i in self.yes_button:
                         i.setEnabled(True)
-                    for i in self.no_button:
-                        i.setEnabled(True)
                     self.vaccine_used.setEnabled(True)
-                    # self.install_vaccine.setEnabled(True)
                     self.vaccine_list.setEnabled(True)
                     log_writer('I','Both Check Complete Activate Check Btn')
-                # print(self.seq_num)
             else:
                 log_writer('W',"Req_num Not Found")
                 QMessageBox.about(self, "알림", f"예약번호의 데이터가 감지되지 않습니다.\n예약번호를 확인해주세요.")
@@ -647,7 +639,6 @@ class MyApp(QWidget):
             sys.exit(1000)
 
     def enable_any_data(self):
-        # self.any_data.setEnabled(False)
         log_writer('I',"AnySupport Data Check")
         try:
             if (
@@ -658,17 +649,12 @@ class MyApp(QWidget):
                 QMessageBox.about(self, "알림", f"애니서포트 에서 복사된 데이터가 인식되지 않습니다.\n확인하여주세요.")
             else:
                 log_writer('I',"AnySupport Data In")
-                # self.any_data.setReadOnly(True)
-                # self.any_confirm.setEnabled(False)
                 self.running_seq[1] = "y"
                 self.any_confirm.setStyleSheet('font-weight:bold')
                 if self.running_seq[0] == 'y' and self.running_seq[1] == 'y':
                     for i in self.yes_button:
                         i.setEnabled(True)
-                    for i in self.no_button:
-                        i.setEnabled(True)
                     self.vaccine_used.setEnabled(True)
-                    # self.install_vaccine.setEnabled(True)
                     self.vaccine_list.setEnabled(True)
                     log_writer('I','Both Check Complete Activate Check Btn')
         except Exception as e:
@@ -679,10 +665,6 @@ class MyApp(QWidget):
     def reset_press(self):
         log_writer('I',"User Input Data Reset")
         try:
-            # self.seq_data.setEnabled(True)
-            # self.seq_confirm.setEnabled(True)
-            # self.any_data.setReadOnly(False)
-            # self.any_data.setEnabled(False)
             self.seq_data.setText("")
             self.any_data.setText("")
             for i in self.yes_button:
@@ -691,15 +673,12 @@ class MyApp(QWidget):
             for i in self.no_button:
                 i.setStyleSheet('')
                 i.setEnabled(False)
-            # self.vaccine_used.setEnabled(False)
 
             self.install_vaccine.setEnabled(False)
             self.vaccine_list.setCurrentIndex(0)
             self.vaccine_list.setEnabled(False)
             self.hbox1.itemAt(1).widget().setParent(None)
             self.hbox1.addWidget(self.vaccine_list)
-            # else:
-                # self.vaccine_list.setCurrentIndex(0)
 
             self.vaccine_used.setText("")
             for i in self.stat_label:
@@ -723,90 +702,117 @@ class MyApp(QWidget):
             ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
             sys.exit(1000)
 
-    def y_reg(self, n):
-        # self.update()
-        # print(n)
-        log_writer('D',"Clicked Good Btn")
+    def be_y_reg(self, n):
+        log_writer('D','Before Check Task Changed')
         try:
+            idx = self.stat_list.index(self.yes_button[n].text())
+            # 1 = 양호
+            # 2 = 취약
+            idx = (idx%2)+1
+            if idx == 2 and (n == 0 or n == 1):
+                self.no_button[n].setText(self.stat_list[idx])
+                self.no_button[n].setEnabled(True)
+                self.af_ans[n] = self.stat_list[idx]
+            elif n == 0 or n == 1:
+                self.no_button[n].setText(self.stat_list[1])
+                self.no_button[n].setEnabled(False)
+                self.af_ans[n] = ""
+                self.no_button[n].setStyleSheet('')
+            self.yes_button[n].setText(self.stat_list[idx])
+
             if self.clip_ck_box.isChecked():
                 log_writer('D',"Script Copy")
-                if len(self.good_text[n]) >= 2 and type(self.good_text[n]) == list:
-                    copy("\n".join(self.good_text[n]))
-                else:
-                    copy(self.good_text[n])
+                if idx == 1:
+                    if len(self.good_text[n]) >= 2 and type(self.good_text[n]) == list:
+                        copy("\n".join(self.good_text[n]))
+                    else:
+                        copy(self.good_text[n])
+                elif idx == 2:
+                    if n == 6:
+                        text_temp, ok = QInputDialog.getText(
+                            self, "앱 권한 취약점", "앱 이름을 적으세요. (다수입력시 : Samsung Notes, Chrome ..."
+                        )
+
+                        if ok:
+                            if len(self.bad_text[n]) >= 2 and type(self.bad_text[n]) == list:
+                                for i in range(len(self.bad_text[n])):
+                                    if "대상 어플" in self.bad_text[n][i]:
+                                        index = i
+
+                                if not index:
+                                    copy("\n".join(self.bad_text[n]))
+                                else:
+                                    self.bad_text[n][index] += text_temp
+                                    copy("\n".join(self.bad_text[n]))
+                                    self.bad_text[n][index] = self.bad_text[n][index].replace(
+                                        text_temp, ""
+                                    )
+                            else:
+                                copy(self.bad_text[n])
+
+                    elif len(self.bad_text[n]) >= 2 and type(self.bad_text[n]) == list:
+                        copy("\n".join(self.bad_text[n]))
+                    else:
+                        copy(self.bad_text[n])
 
             if "취약" in self.stat_label[n].text():
                 temp = self.stat_label[n].text().replace("취약", "")
                 self.stat_label[n].setText(temp + "양호")
                 self.ans[n] = "양호"
-                # print(self.ans)
             elif "양호" in self.stat_label[n].text():
-                pass
-            else:
-                self.stat_label[n].setText(self.stat_label[n].text() + "양호")
-                self.ans[n] = "양호"
-                # print(self.ans)
-            self.yes_button[n].setStyleSheet('color:#0077FF;font-weight:bold')
-            # self.yes_button[n].setBold(True)
-            self.no_button[n].setStyleSheet('')
-            # self.no_button[n].setBold(False)
-            self.stat_print()
-        except Exception as e:
-            log_writer('E',"Good Report Module Error", e)
-            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
-            sys.exit(1000)
-
-    def n_reg(self, n):
-        # self.update()
-        log_writer('D',"Clicked Bad Btn")
-        try:
-            if self.clip_ck_box.isChecked():
-                log_writer('D',"Script Copy")
-                if n == 6:
-                    text_temp, ok = QInputDialog.getText(
-                        self, "앱 권한 취약점", "앱 이름을 적으세요. (다수입력시 : Samsung Notes, Chrome ..."
-                    )
-
-                    if ok:
-                        if len(self.bad_text[n]) >= 2 and type(self.bad_text[n]) == list:
-                            for i in range(len(self.bad_text[n])):
-                                if "대상 어플" in self.bad_text[n][i]:
-                                    index = i
-
-                            if not index:
-                                copy("\n".join(self.bad_text[n]))
-                            else:
-                                self.bad_text[n][index] += text_temp
-                                copy("\n".join(self.bad_text[n]))
-                                self.bad_text[n][index] = self.bad_text[n][index].replace(
-                                    text_temp, ""
-                                )
-                        else:
-                            copy(self.bad_text[n])
-
-                elif len(self.bad_text[n]) >= 2 and type(self.bad_text[n]) == list:
-                    copy("\n".join(self.bad_text[n]))
-                else:
-                    copy(self.bad_text[n])
-
-            if "양호" in self.stat_label[n].text():
                 temp = self.stat_label[n].text().replace("양호", "")
                 self.stat_label[n].setText(temp + "취약")
                 self.ans[n] = "취약"
-                # print(self.ans)
-            elif "취약" in self.stat_label[n].text():
-                pass
             else:
-                self.stat_label[n].setText(self.stat_label[n].text() + "취약")
-                self.ans[n] = "취약"
-                # print(self.ans)
-            self.no_button[n].setStyleSheet("color:red;font-weight:bold")
-            # self.no_button[n].setBold(True)
-            self.yes_button[n].setStyleSheet("")
-            # self.yes_button[n].setBold(False)
+                self.stat_label[n].setText(self.stat_label[n].text() + self.stat_list[idx])
+                self.ans[n] = self.stat_list[idx]
+
+            # print(self.ans)
+            if idx == 1:
+                self.yes_button[n].setStyleSheet('color:#0077FF;font-weight:bold')
+            elif idx == 2:
+                self.yes_button[n].setStyleSheet("color:red;font-weight:bold")
+                if n == 0 or n == 1:
+                    self.no_button[n].setStyleSheet("color:red;font-weight:bold")
+
+            self.ans[n] = self.stat_list[idx]
             self.stat_print()
         except Exception as e:
-            log_writer('E',"Bad Report Module Error", e)
+            log_writer('E',"Check Before Task Change Module Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
+    
+    def be_n_reg(self, n):
+        log_writer('D','After Check Task Changed')
+        try:
+            idx = self.stat_list.index(self.no_button[n].text())
+            # print(f"a:{idx}")
+            idx = (idx%2)+1
+            self.no_button[n].setText(self.stat_list[idx])
+            self.af_ans[n] = self.stat_list[idx]
+            # self.stat_print()
+            
+            if self.clip_ck_box.isChecked():
+                log_writer('D',"Script Copy")
+                if idx == 1:
+                    if len(self.afterg_text[n]) >= 2 and type(self.afterg_text[n]) == list:
+                        copy("\n".join(self.afterg_text[n]))
+                    else:
+                        copy(self.afterg_text[n])
+                elif idx == 2:
+                    if len(self.afterb_test[n]) >= 2 and type(self.afterb_test[n]) == list:
+                        copy("\n".join(self.afterb_test[n]))
+                    else:
+                        copy(self.afterb_test[n])
+
+            if idx == 1:
+                self.no_button[n].setStyleSheet('color:#0077FF;font-weight:bold')
+            elif idx == 2:
+                self.no_button[n].setStyleSheet("color:red;font-weight:bold")
+            
+            # print(self.af_ans)
+        except Exception as e:
+            log_writer('E',"Check After Task Change Module Error", e)
             ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
             sys.exit(1000)
 
@@ -838,34 +844,12 @@ class MyApp(QWidget):
                         QMessageBox.about(self, "알림", f"입력 안된 값이 있습니다!\n{i+1}번 항목을 확인해주세요.")
                         break
             else:
-                # print(mobile_data)
                 # print(len(mobile_data.split('\n')))
                 log_writer('I',"AnySupport Data Check Complete")
                 reply = QMessageBox.question(self,"저장 안내","이대로 저장하시겠습니까?",QMessageBox.Yes | QMessageBox.Yes ,QMessageBox.No)
 
                 if reply == QMessageBox.Yes:
                     log_writer('I',"Save Sequence Run")
-                    # log_writer('I',"AnySupport Data Check Complete (2Step)")
-                    for i in range(len(self.af_ans)):
-                        if self.ans[i] == '양호':
-                            self.af_ans[i] = '양호'
-                        else:
-                            if i == 0:
-                                ck_reply = QMessageBox.question(self,"조치 확인",f"1. 백신 설치 여부 확인\n점검 전 : [{self.ans[i]}] 입니다. 조치 하셨으면 Yes 안하셨으면 No를 입력해주세요.",QMessageBox.Yes | QMessageBox.Yes ,QMessageBox.No)
-
-                                if ck_reply == QMessageBox.Yes:
-                                    self.af_ans[i] = '양호'
-                                elif ck_reply == QMessageBox.No:
-                                    self.af_ans[i] = '취약'
-                            if i == 1:
-                                ck_reply = QMessageBox.question(self,"조치 확인",f"2. 백신 최신 업데이트 및 실시간 감시 작동 확인\n점검 전 : [{self.ans[i]}] 입니다. 조치 하셨으면 Yes 안하셨으면 No를 입력해주세요.",QMessageBox.Yes | QMessageBox.Yes ,QMessageBox.No)
-
-                                if ck_reply == QMessageBox.Yes:
-                                    self.af_ans[i] = '양호'
-                                elif ck_reply == QMessageBox.No:
-                                    self.af_ans[i] = '취약'
-
-                            # print(1)
                     data = mobile_data.split("\n")
                     datas = []
                     for i in data:
@@ -911,8 +895,6 @@ class MyApp(QWidget):
                         if "Broad_Bender" in i.text:
                             i.text = i.text.replace("Broad_Bender", u_data["통신사"])
                         if "Used_Vaccine" in i.text:
-                            # print(self.vaccine_used.text())
-                            # print(self.hbox1.itemAt(1).widget())
                             if (self.vaccine_used.text() == '' and self.vaccine_list.currentText() == '미설치') or (self.vaccine_used.text() == '' and self.vaccine_list.currentText() == '기타...'):
                                 i.text = i.text.replace("Used_Vaccine", "미설치")
                             else:
@@ -953,13 +935,7 @@ class MyApp(QWidget):
                             text = (tables[1].rows[i + 1].cells[3].paragraphs[0].add_run(self.af_ans[i]))
                             text.bold = True
                             text.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
-
-                    # windows_user_name = os.path.expanduser("~")
                     log_writer('I',"Write End | Save Start")
-                    # origin_locate = os.getcwd()
-
-                    # os.chdir(windows_user_name + "/Desktop")
-                    # os.chdir(self.scripts['저장경로'])
                     log_writer('I',f"Save Location : {self.scripts['저장경로']}")
                     tm = time.localtime(time.time())
 
@@ -971,12 +947,9 @@ class MyApp(QWidget):
                         else:
                             pass
 
-                        # os.chdir(self.scripts['저장경로']+"/" + date)
                         try:
                             if not os.path.isdir(f"{self.scripts['저장경로']}/{date}/{self.seq_num.split('-')[1]}"):
                                 os.mkdir(f"{self.scripts['저장경로']}/{date}/{self.seq_num.split('-')[1]}")
-                                # os.chdir(f"{self.scripts['저장경로']}/{date}/{self.seq_num.split('-')[1]}")
-                                # print(1)
                             else:
                                 pass
                         except:
@@ -987,44 +960,28 @@ class MyApp(QWidget):
                         log_writer('I',"Save Complete (Basic Loc)")
                         doc.save(f"{self.scripts['저장경로']}/{self.seq_num}.docx")
 
-                    # try:
-                    #     doc.save(f"./" + self.seq_num.split("-")[1] + "/" + self.seq_num + ".docx")
-                    #     # print(2)
-                    #     # sub_file_name = self.seq_num.split('-')[1]
-                    # except:
-                    #     doc.save(f"./" + self.seq_num + ".docx")
-
-                    # os.chdir(origin_locate)
                     log_writer('I',"Removed Basic Docx File")
                     os.remove("./report_m.docx")
+                    if self.clip_ck_box.isChecked():
+                        QMessageBox.about(self, "알림", "저장 완료.")
+                        log_writer('I',"Copy Secu Manual URL")
+                        copy("https://www.boho.or.kr/webprotect/pcSecCheck.do")
+                        manual_page_ans = QMessageBox.question(self, "알림", "보안안내서 페이지 복사 됨.", QMessageBox.Yes | QMessageBox.Yes)
+                        copy("https://www.boho.or.kr/webprotect/pcSecCheck.do")
+                        while not manual_page_ans:
+                            time.sleep(0.01)
 
-                    QMessageBox.about(self, "알림", "저장 완료.")
-                    log_writer('I',"Copy Secu Manual URL")
-                    copy("https://www.boho.or.kr/webprotect/pcSecCheck.do")
-                    #     QMessageBox.question(
-                    #     self, "저장 안내", text, QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes
-                    # )
-                    manual_page_ans = QMessageBox.question(self, "알림", "보안안내서 페이지 복사 됨.", QMessageBox.Yes | QMessageBox.Yes)
-                    copy("https://www.boho.or.kr/webprotect/pcSecCheck.do")
-                    while not manual_page_ans:
-                        time.sleep(0.01)
-
-                    log_writer('I',"Copy Servey URL")
-                    copy("https://docs.google.com/forms/d/e/1FAIpQLSdfy-qViIlFArBpPMCgN6hyzuU7eSEelTNT_z72uXHzXI2Z7A/viewform?usp=sf_link")
-                    request_page_ans = QMessageBox.question(self, "알림", "설문조사 페이지 복사 됨.", QMessageBox.Yes | QMessageBox.Yes)
-                    copy("https://docs.google.com/forms/d/e/1FAIpQLSdfy-qViIlFArBpPMCgN6hyzuU7eSEelTNT_z72uXHzXI2Z7A/viewform?usp=sf_link")
+                        log_writer('I',"Copy Servey URL")
+                        copy("https://docs.google.com/forms/d/e/1FAIpQLSdfy-qViIlFArBpPMCgN6hyzuU7eSEelTNT_z72uXHzXI2Z7A/viewform?usp=sf_link")
+                        request_page_ans = QMessageBox.question(self, "알림", "설문조사 페이지 복사 됨.", QMessageBox.Yes | QMessageBox.Yes)
+                        copy("https://docs.google.com/forms/d/e/1FAIpQLSdfy-qViIlFArBpPMCgN6hyzuU7eSEelTNT_z72uXHzXI2Z7A/viewform?usp=sf_link")
 
                     while not request_page_ans:
                         time.sleep(0.01)
 
                     log_writer('I',"Default Status Reset")
-                    # self.seq_data.setEnabled(True)
-                    # self.seq_confirm.setEnabled(True)
-                    # self.any_data.setReadOnly(False)
-                    # self.any_data.setEnabled(False)
+
                     for i in self.yes_button:
-                        i.setEnabled(False)
-                    for i in self.no_button:
                         i.setEnabled(False)
 
                     self.vaccine_used.setEnabled(False)
@@ -1061,4 +1018,3 @@ if __name__ == "__main__":
         log_writer('E',"Main Module Load Error", e)
         ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
         sys.exit(1000)
-    # check_event.set()
