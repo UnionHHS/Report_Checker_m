@@ -489,14 +489,14 @@ class MyApp(QWidget):
             self.ck_bt_la1 = QLabel('점검결과')
             self.ck_bt_la2 = QLabel('조치여부')
 
-            self.ck_bt_la1.setContentsMargins(0,0,0,0)
-            self.ck_bt_la2.setContentsMargins(0,0,0,0)
-
             self.grids = QGridLayout()
-            self.grids.addWidget(self.ck_bt_la1, 0, 0, 1, 1, alignment=Qt.AlignCenter)
-            self.grids.addWidget(self.ck_bt_la2, 0, 1, 1, 1,  alignment=Qt.AlignCenter)
+            self.grids.addWidget(QLabel(),0,0,1,1)
+            self.grids.addWidget(self.ck_tx_la, 0,1,1,1)
+            self.grids.addWidget(QLabel(),0,2,1,1)
+            self.grids.addWidget(self.ck_bt_la1, 0, 3, 1, 1, alignment=Qt.AlignCenter)
+            self.grids.addWidget(self.ck_bt_la2, 0, 4, 1, 1,  alignment=Qt.AlignCenter)
 
-            self.grids.setContentMargins(0,0,0,0)
+            self.grids.setContentsMargins(0,0,0,0)
 
             self.running_seq = ["","",]
             question = [
@@ -533,10 +533,10 @@ class MyApp(QWidget):
             self.grid.addWidget(self.install_vaccine,11,4)
             self.grid.addWidget(self.stat_now, 9, 4, 1, 1, alignment=Qt.AlignCenter)
 
-            self.grid.addWidget(self.ck_tx_la, 1,0,1,1, alignment=Qt.AlignCenter)
+            # self.grid.addWidget(self.ck_tx_la, 1,0,1,1, alignment=Qt.AlignCenter)
             # self.grid.addWidget(self.ck_bt_la1, 1,1,1,1, alignment=Qt.AlignCenter)
             # self.grid.addWidget(self.ck_bt_la2, 1,2,1,1, alignment=Qt.AlignCenter)
-            self.grid.addLayout(self.grids,1,1,1,2)
+            self.grid.addLayout(self.grids,1,0,1,3)
 
             for x in range(1, len(self.stat_label) + 1):
                 self.grid.addWidget(self.stat_label[x - 1], x+1, 0)
