@@ -491,10 +491,10 @@ class MyApp(QWidget):
 
             self.grids = QGridLayout()
             self.grids.addWidget(QLabel(),0,0,1,1)
-            self.grids.addWidget(self.ck_tx_la, 0,1,1,1)
-            self.grids.addWidget(QLabel(),0,2,1,1)
-            self.grids.addWidget(self.ck_bt_la1, 0, 3, 1, 1, alignment=Qt.AlignCenter)
-            self.grids.addWidget(self.ck_bt_la2, 0, 4, 1, 1,  alignment=Qt.AlignCenter)
+            self.grids.addWidget(self.ck_tx_la, 0,1,1,2)
+            self.grids.addWidget(QLabel(),0,3,1,1)
+            self.grids.addWidget(self.ck_bt_la1, 0, 4, 1, 1, alignment=Qt.AlignCenter)
+            self.grids.addWidget(self.ck_bt_la2, 0, 5, 1, 1,  alignment=Qt.AlignCenter)
 
             self.grids.setContentsMargins(0,0,0,0)
 
@@ -524,10 +524,10 @@ class MyApp(QWidget):
 
             self.grid.addWidget(self.save, 11, 6)
             self.grid.addWidget(self.reset, 11, 5)
-            self.grid.addWidget(self.file_ck,9,6)
+            self.grid.addWidget(self.file_ck,9,6, alignment=Qt.AlignCenter)
             self.grid.addWidget(self.any_data, 1, 4, 8, 3)
 
-            self.grid.addWidget(self.cp_ms_ck,9,5,1,1)
+            self.grid.addWidget(self.cp_ms_ck,9,5,1,1, alignment=Qt.AlignCenter)
             self.grid.addWidget(self.change_script, 0, 4, 1, 1)
             self.grid.addLayout(self.hbox1,11,0,1,4)
             self.grid.addWidget(self.install_vaccine,11,4)
