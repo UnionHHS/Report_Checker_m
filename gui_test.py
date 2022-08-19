@@ -319,6 +319,7 @@ class MyApp(QWidget):
                         "저장경로": windows_user_name + "/Desktop",
                         "NFSF" : "N",
                         "CLIP" : "Y",
+                        "MANU" : "Y",
                     }
                     
                     try:
@@ -443,6 +444,20 @@ class MyApp(QWidget):
             self.change_script = QPushButton("문구 및 설정변경")
             self.change_script.released.connect(self.script_change)
 
+            self.cp_ms_ck = QCheckBox('안내서 및 설문')
+            self.cp_ms_ck.stateChanged.connect(self.MENU_stat)
+            try:
+                if self.scripts['MENU'] == 'Y':
+                    self.cp_ms_ck.toggle()
+            except KeyError:
+                log_writer('I',"Script Modify")
+                self.scripts["MENU"] = "Y"
+                with open('./script.json', encoding='utf-8') as f:
+                    scripts = json.load(f)
+                scripts['MENU'] = "Y"
+                with open('./script.json', 'w', encoding='utf-8') as f:
+                    json.dump(scripts, f, ensure_ascii=False, indent=4)
+
             vaccine_text = QLabel("사용중인 백신(수동 입력시 ,으로 구분): ")
 
             vac_list = ['미설치','V3 Mobile Security', '알약M', '네이버 백신', '모바일가드', '기타...']
@@ -469,9 +484,13 @@ class MyApp(QWidget):
             self.hbox1.addWidget(self.vaccine_list)
             # hbox1.addWidget(self.vaccine_used)
 
-            self.ck_tx_la = QLabel('점검내용')
-            self.ck_bt_la1 = QLabel('조치전')
-            self.ck_bt_la2 = QLabel('조치후')
+            self.ck_tx_la = QPushButton('점검항목')
+            self.ck_tx_la.released.connect(self.cp_cklist)
+            self.ck_bt_la1 = QLabel('점검결과')
+            self.ck_bt_la2 = QLabel('조치여부')
+
+            self.ck_bt_la1.resize(20, 10)
+            self.ck_bt_la2.resize(20, 10)
 
             self.running_seq = ["","",]
             question = [
@@ -502,10 +521,11 @@ class MyApp(QWidget):
             self.grid.addWidget(self.file_ck,9,6)
             self.grid.addWidget(self.any_data, 1, 4, 8, 3)
 
+            self.grid.addWidget(self.cp_ms_ck,9,5,1,1)
             self.grid.addWidget(self.change_script, 0, 4, 1, 1)
             self.grid.addLayout(self.hbox1,11,0,1,4)
             self.grid.addWidget(self.install_vaccine,11,4)
-            self.grid.addWidget(self.stat_now, 9, 4, 1, 2, alignment=Qt.AlignCenter)
+            self.grid.addWidget(self.stat_now, 9, 4, 1, 1, alignment=Qt.AlignCenter)
 
             self.grid.addWidget(self.ck_tx_la, 1,0,1,1, alignment=Qt.AlignCenter)
             self.grid.addWidget(self.ck_bt_la1, 1,1,1,1, alignment=Qt.AlignCenter)
@@ -542,6 +562,46 @@ class MyApp(QWidget):
             self.show()
         except Exception as e:
             log_writer('E',"Mobile Report Program Init Error", e)
+            ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
+            sys.exit(1000)
+
+    def cp_cklist(self):
+
+        text = "안녕하세요 내PC돌보미센터 점검원입니다.\n아래와 같이 8가지 항목에 대한 점검을 진행하도록 하겠습니다.\n\n"
+        script_q = [
+                "1. 백신 설치 여부 확인",
+                "2. 백신 최신 업데이트 및 실시간 감시 기능 확인",
+                "3. 스마트폰 잠금 여부 확인",
+                "4. 구글 Play 프로텍트 확인",
+                "5. 최신 업데이트 확인",
+                "6. 개발자 옵션 활성화 여부 확인",
+                "7. 앱 권한 관리 확인",
+                "8. 구글 2단계 인증 설정 여부 확인",
+            ]
+        for i in script_q:
+            text += (i+'\n')
+        
+        copy(text)
+
+    def MENU_stat(self):
+        log_writer('D',"Menual and Survey Setting Type Check")
+        try:
+            if self.cp_ms_ck.isChecked():
+                self.scripts["MENU"] = "Y"
+                with open('./script.json', encoding='utf-8') as f:
+                    scripts = json.load(f)
+                scripts['MENU'] = "Y"
+                with open('./script.json', 'w', encoding='utf-8') as f:
+                    json.dump(scripts, f, ensure_ascii=False, indent=4)
+            else:
+                self.scripts["MENU"] = "N"
+                with open('./script.json', encoding='utf-8') as f:
+                    scripts = json.load(f)
+                scripts['MENU'] = "N"
+                with open('./script.json', 'w', encoding='utf-8') as f:
+                    json.dump(scripts, f, ensure_ascii=False, indent=4)
+        except Exception as e:
+            log_writer('E',"Menual and Survey Setting Type Check Error", e)
             ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
             sys.exit(1000)
 
