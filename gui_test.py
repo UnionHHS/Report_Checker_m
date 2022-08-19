@@ -444,7 +444,7 @@ class MyApp(QWidget):
             self.change_script = QPushButton("문구 및 설정변경")
             self.change_script.released.connect(self.script_change)
 
-            self.cp_ms_ck = QCheckBox('안내서 및 설문')
+            self.cp_ms_ck = QCheckBox('안내서 및 설문링크')
             self.cp_ms_ck.stateChanged.connect(self.MENU_stat)
             try:
                 if self.scripts['MENU'] == 'Y':
