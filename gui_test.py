@@ -1033,8 +1033,8 @@ class MyApp(QWidget):
 
                     log_writer('I',"Removed Basic Docx File")
                     os.remove("./report_m.docx")
-                    if self.clip_ck_box.isChecked():
-                        QMessageBox.about(self, "알림", "저장 완료.")
+                    QMessageBox.about(self, "알림", "저장 완료.")
+                    if self.cp_ms_ck.isChecked():
                         log_writer('I',"Copy Secu Manual URL")
                         copy("https://www.boho.or.kr/webprotect/pcSecCheck.do")
                         manual_page_ans = QMessageBox.question(self, "알림", "보안안내서 페이지 복사 됨.", QMessageBox.Yes | QMessageBox.Yes)
