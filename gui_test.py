@@ -489,8 +489,12 @@ class MyApp(QWidget):
             self.ck_bt_la1 = QLabel('점검결과')
             self.ck_bt_la2 = QLabel('조치여부')
 
-            self.ck_bt_la1.resize(20, 10)
-            self.ck_bt_la2.resize(20, 10)
+            # self.ck_bt_la1.setStyleSheet("QLabel {border:0px;}")
+            # self.ck_bt_la2.setStyleSheet("QLabel {padding: 0px 0px 0px 0px;}")
+            self.ck_bt_la1.setContentsMargins(0,0,0,0)
+            self.ck_bt_la2.setContentsMargins(0,0,0,0)
+
+            # self.grid.setContentsMargins(1,1,1,1)
 
             self.running_seq = ["","",]
             question = [
