@@ -380,11 +380,14 @@ class MyApp(QWidget):
         else:
             pass
 
+    def version_viwer(self):
+        return '1.6.0'
+
     def initUI(self):
         log_writer('I',"Mobile Report Program Init")
         try:
             self.script_init()
-            self.setWindowTitle("보고서 생성기")
+            self.setWindowTitle(f"보고서 생성기 (v{self.version_viwer()})")
             self.grid = QGridLayout()
             self.setLayout(self.grid)
 
