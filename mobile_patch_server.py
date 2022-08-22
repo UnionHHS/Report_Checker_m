@@ -11,6 +11,9 @@ from threading import Thread
 #     hash_data = h.hexdigest()
 #     return hash_data
 
+# # server_loc = ('172.30.1.58',19520)
+# server_loc = ('192.168.120.100',19520)
+
 def HASH_CHECKER():
     with open(f'./Git/Report_Checker_m/dist/version', 'r') as f:
     # with open(f'./dist/version', 'r') as f:

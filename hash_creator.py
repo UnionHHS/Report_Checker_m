@@ -5,6 +5,8 @@ import hashlib
 import time, zipfile, traceback
 import atexit
 
+# server_loc = ('172.30.1.58',19520)
+server_loc = ('192.168.120.100',19520)
 
 def log_writer(types, data, Except=None):
     tm = time.localtime(time.time())
@@ -29,7 +31,7 @@ def HASH_CHECKER():
     log_writer("I","[Patcher] Hash File Created")
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sc:
-            sc.connect(('172.30.1.58',19520))
+            sc.connect(server_loc)
             sc.send("version".encode())
             data = sc.recv(4096)
             data = data.decode('utf-8')
@@ -42,10 +44,9 @@ def HASH_CHECKER():
 
 def soc_t():
     try:
-        log_writer("I",f"[Patcher] Connect Server = {('172.30.1.58',19520)}")
+        log_writer("I",f"[Patcher] Connect Server = {server_loc}")
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sc:
-            # sc.connect(("192.168.50.134",19520))
-            sc.connect(('172.30.1.58',19520))
+            sc.connect(server_loc)
             # with open('./version', 'r', encoding='utf-8') as f:
             #     hada = f.read()
             sc.send("main ready".encode())
@@ -53,7 +54,7 @@ def soc_t():
             size_data = size_data.decode('utf-8')
             print(f'파일 크기 = {size_data}Bytes')
             data_transferred = 0
-            with open("./mobile.exe", 'wb') as f:
+            with open("./bin/mobile.exe", 'wb') as f:
                 log_writer("I","[Patcher] Recv File")
                 try:
                     data = sc.recv(1024)
@@ -71,28 +72,29 @@ def soc_t():
         log_writer("E","[Patcher] Update Failed", e)
 
 def runs():
-    os.popen("./bin/mobile.exe")
+    os.popen(r".\bin\mobile.exe")
 
-
+atexit.register(runs)
 try:
-    log_writer('I',f"[Patcher] Update Check Target Server = {('172.30.1.58',19520)}")
+    log_writer('I',f"[Patcher] Update Check Target Server = {server_loc}")
     
     with open('./version', 'r', encoding='utf-8') as f:
         hada = f.read()
     if hada == '':
         raise "Update Failed Run Normal Mode"
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.connect(('172.30.1.58',19520))
-    # soc.connect(('192.168.120.100',19520))
+    soc.connect(server_loc)
     soc.send(hada.encode('utf-8'))
     data = soc.recv(1024)
     if data.decode('utf-8') == 'Version Changed':
         log_writer('I',"[Patcher] Update Start")
         ctypes.windll.user32.MessageBoxW(0, "프로그램 업데이트가 있습니다.\n업데이트를 시작합니다.", "알림", 0)
+    else:
+        log_writer("I","[Patcher] Not Avilable Update")
     try:
         log_writer("I","[Patcher] Main Process Kill Seq")
         os.system('taskkill /f /im mobile.exe')
-        os.remove('mobile.exe')
+        os.remove(r'.\bin\mobile.exe')
     except Exception as e:
         ctypes.windll.user32.MessageBoxW(0, "프로그램 업데이트를 실패했습니다.\n개발자에게 연락 후 나스 폴더에서 새로 받아주시길 바랍니다!", "오류", 16)
         log_writer("E","[Patcher] Kill Failed")
@@ -103,16 +105,19 @@ try:
     except Exception as e:
         ctypes.windll.user32.MessageBoxW(0, "프로그램 업데이트를 실패했습니다.\n개발자에게 연락 후 나스 폴더에서 새로 받아주시길 바랍니다!", "오류", 16)
         log_writer("I","[Patcher] Update Fail")
-    else:
-        log_writer("I","[Patcher] Not Avilable Update")
+    
+
+    try:
+        log_writer("I","[Patcher] Version Hash File Re Write")
+        HASH_CHECKER()
+
+    except Exception as e:
+        ctypes.windll.user32.MessageBoxW(0, "프로그램 업데이트를 실패했습니다.\n개발자에게 연락 후 나스 폴더에서 새로 받아주시길 바랍니다!", "오류", 16)
+        log_writer("E","[Patcher] Verion Hash File Re Write Fail")
+
 except Exception as e:
     log_writer('E',"[Patcher] Update Process Error!", e)
     ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
 
-try:
-    log_writer("I","[Patcher] Version Hash File Re Write")
-    HASH_CHECKER()
-    atexit.register(runs)
-except Exception as e:
-    ctypes.windll.user32.MessageBoxW(0, "프로그램 업데이트를 실패했습니다.\n개발자에게 연락 후 나스 폴더에서 새로 받아주시길 바랍니다!", "오류", 16)
-    log_writer("E","[Patcher] Verion Hash File Re Write Fail")
+
+    
