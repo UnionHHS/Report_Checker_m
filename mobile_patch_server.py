@@ -2,25 +2,10 @@ import socket
 import os
 from threading import Thread
 
-# def HASH_CHECKER():
-#     with open(f'./Git/Report_Checker_m/dist/mobile.exe', 'rb') as f:
-#     # with open(f'./dist/mobile.exe', 'rb') as f:
-#         data = f.read()
-#     h = hashlib.sha256()
-#     h.update(data)
-#     hash_data = h.hexdigest()
-#     return hash_data
-
-# # server_loc = ('172.30.1.58',19520)
-# server_loc = ('192.168.120.100',19520)
-
 def HASH_CHECKER():
     with open(f'./Git/Report_Checker_m/dist/version', 'r') as f:
-    # with open(f'./dist/version', 'r') as f:
+    # with open('./dist/version', 'r', encoding='utf-8') as f:
         data = f.read()
-    # h = hashlib.sha256()
-    # h.update(data)
-    # hash_data = h.hexdigest()
     return data
 
 def hash_diff(hada, conn):
@@ -37,9 +22,6 @@ def hash_diff(hada, conn):
     else:
         conn.send("Not Changed".encode('utf-8'))
     
-    
-
-
 def uploader(conn):
     file_size = str(os.path.getsize('./mobile.exe'))
     conn.send(file_size.encode('utf-8'))
@@ -51,7 +33,6 @@ def uploader(conn):
             while data:
                 data_transferred += conn.send(data) # 전송된 파일 크기가 리턴되어 data_transferred 함수에 저장
                 data = f.read(1024) #파일 1024 만큼 추가 읽기
-                # print(data_transferred)
         except Exception as ex:
             print(ex)
     print("전송완료 %s, 전송량 %d" %("mobile.exe", data_transferred))
