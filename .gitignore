@@ -154,3 +154,6 @@ gui_*.exe
 log_*
 *.zip
 *.json
+text.txt
+
+version.hash

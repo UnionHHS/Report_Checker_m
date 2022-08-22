@@ -1,47 +1,58 @@
 import socket
-import hashlib
 import os
 from threading import Thread
 
-#version checker
+# def HASH_CHECKER():
+#     with open(f'./Git/Report_Checker_m/dist/mobile.exe', 'rb') as f:
+#     # with open(f'./dist/mobile.exe', 'rb') as f:
+#         data = f.read()
+#     h = hashlib.sha256()
+#     h.update(data)
+#     hash_data = h.hexdigest()
+#     return hash_data
 
 def HASH_CHECKER():
-    with open(f'mobile.exe', 'rb') as f:
+    with open(f'./Git/Report_Checker_m/dist/version', 'r') as f:
+    # with open(f'./dist/version', 'r') as f:
         data = f.read()
-    h = hashlib.sha256()
-    h.update(data)
-    hash_data = h.hexdigest()
-    return hash_data
+    # h = hashlib.sha256()
+    # h.update(data)
+    # hash_data = h.hexdigest()
+    return data
 
 def hash_diff(hada, conn):
     server_data = HASH_CHECKER()
     cliner_data = hada
+    print(hada)
+    if cliner_data == 'main ready':
+        uploader(conn)
+        return 0
+    elif cliner_data == 'version':
+        conn.send(HASH_CHECKER().encode('utf-8'))
+    elif server_data != cliner_data:
+        conn.send("Version Changed".encode('utf-8'))
+    else:
+        conn.send("Not Changed".encode('utf-8'))
+    
+    
 
-    print(cliner_data)
-    # conn.send(server_data.encode())
-    uploader(conn)
-    # if server_data != cliner_data:
-    #     uploader(conn)
 
 def uploader(conn):
-    # with open('mobile.exe', 'rb') as f:
-    #     data = f.read()
     file_size = str(os.path.getsize('./mobile.exe'))
-    conn.send(file_size.encode())
-    stat = conn.recv(1000)
-    print(stat)
-    if stat.decode('utf-8') == 'ready':
-        with open('mobile.exe', 'rb') as f:
-            try:
-                data = f.read(1024)
-                while data:
-                    transed = conn.send(data)
-                    data = f.read(1024)
-            except Exception as e:
-                print(e)
-        print("전송완료 %s, 전송량 %d" %("mobile.exe", transed))
-
-max_thread = 10
+    conn.send(file_size.encode('utf-8'))
+    data_transferred = 0
+    with open(f'./Git/Report_Checker_m/dist/mobile.exe', 'rb') as f:
+    # with open('./dist/mobile.exe', 'rb') as f:
+        try:
+            data = f.read(1024) # 파일 읽기 여부 확인
+            while data:
+                data_transferred += conn.send(data) # 전송된 파일 크기가 리턴되어 data_transferred 함수에 저장
+                data = f.read(1024) #파일 1024 만큼 추가 읽기
+                # print(data_transferred)
+        except Exception as ex:
+            print(ex)
+    print("전송완료 %s, 전송량 %d" %("mobile.exe", data_transferred))
+    conn.close()
 
 soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

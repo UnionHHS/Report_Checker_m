@@ -1,4 +1,4 @@
-import sys, time, os, platform
+import sys, time, os
 import time
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -11,6 +11,9 @@ import json
 import zipfile
 import traceback
 import ctypes
+import psutil
+
+import socket
 
 global scripts
 
@@ -19,7 +22,7 @@ def log_writer(types, data, Except=None):
     date = (str(tm.tm_year)[2:] + str(tm.tm_mon).zfill(2) + str(tm.tm_mday).zfill(2))
     times = f"{tm.tm_year}-{str(tm.tm_mon).zfill(2)}-{str(tm.tm_mday).zfill(2)} {str(tm.tm_hour).zfill(2)}:{str(tm.tm_min).zfill(2)}:{str(tm.tm_sec).zfill(2)}"
     if types == 'E':
-        with open(f"./log/log_{date}.log",'a',encoding='utf8') as f:
+        with open(f"../log/log_{date}.log",'a',encoding='utf8') as f:
             f.writelines(f"{times} = [{types}] {data}\n")
             f.writelines("---------ERROR---------\n")
             f.writelines(traceback.format_exc())
@@ -30,7 +33,7 @@ def log_writer(types, data, Except=None):
                 for i in files:
                     zf.write(os.path.join(folder, i), os.path.relpath(os.path.join(folder, i), './log'), compress_type = zipfile.ZIP_DEFLATED)
     else:
-        with open(f"./log/log_{date}.log",'a',encoding='utf8') as f:
+        with open(f"../log/log_{date}.log",'a',encoding='utf8') as f:
             f.writelines(f"{times} = [{types}] {data}\n")
         
 
@@ -45,7 +48,7 @@ class script_modify(QDialog):
     def script_init(self):
         log_writer('D',"Script Init")
         try:
-            with open("./script.json", encoding="utf-8") as f:
+            with open("../script.json", encoding="utf-8") as f:
                 scripts = json.load(f)
         except Exception as e:
             log_writer('E','Load Script Error', e)
@@ -133,7 +136,7 @@ class script_modify(QDialog):
             self.sa_tb.setText(fold)
             self.scripts['저장경로'] = fold
             
-            with open("./script.json",'w',encoding="utf-8") as f:
+            with open("../script.json",'w',encoding="utf-8") as f:
                 json.dump(self.scripts,f)
                 log_writer('I',f"Folder Selected {fold}")
         except Exception as e:
@@ -209,14 +212,14 @@ class script_modify(QDialog):
                 reply = QMessageBox.question(self, "저장 안내", text, QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
                 
                 if reply == QMessageBox.Yes:
-                    if not os.path.isfile("./script.json"):
+                    if not os.path.isfile("../script.json"):
                         print("파일 생성")
-                        with open("./script.json", "w", encoding="utf-8") as f:
+                        with open("../script.json", "w", encoding="utf-8") as f:
                             json.dump(self.temp, f, ensure_ascii=False, indent=4)
                     else:
-                        with open("./script_bak.json", "w", encoding="utf-8") as f:
+                        with open("../script_bak.json", "w", encoding="utf-8") as f:
                             json.dump(self.scripts, f, ensure_ascii=False, indent=4)
-                        with open("./script.json", "w", encoding="utf-8") as f:
+                        with open("../script.json", "w", encoding="utf-8") as f:
                             json.dump(self.temp, f, ensure_ascii=False, indent=4)
                     self.work = True
                     self.close()
@@ -272,7 +275,7 @@ class MyApp(QWidget):
         log_writer('I',"Scripts Init")
         try:
             windows_user_name = os.path.expanduser("~")
-            if not os.path.isfile("./script.json"):
+            if not os.path.isfile("../script.json"):
                 reply = QMessageBox.question(
                     self,
                     "오류",
@@ -324,7 +327,7 @@ class MyApp(QWidget):
                     
                     try:
                         log_writer('D',"Script Save")
-                        with open("./script.json", "w", encoding="utf-8") as f:
+                        with open("../script.json", "w", encoding="utf-8") as f:
                             json.dump(script_temp, f,ensure_ascii=False, indent=4)
                     except:
                         pass
@@ -333,7 +336,7 @@ class MyApp(QWidget):
                     self.scripts = script_temp
                     # self.script_init()
             else:
-                with open("./script.json", encoding="utf-8") as f:
+                with open("../script.json", encoding="utf-8") as f:
                     self.scripts = json.load(f)
             self.good_text = self.scripts["양호"]
             self.bad_text = self.scripts["취약"]
@@ -342,7 +345,7 @@ class MyApp(QWidget):
                 self.afterb_test = self.scripts["조치후_취약"]
             except KeyError:
                 log_writer("W", "Update Json Data Reflesh")
-                with open("./script.json", encoding="utf-8") as f:
+                with open("../script.json", encoding="utf-8") as f:
                     data = json.load(f)
                 data["조치후_양호"] = [
                             "1번(백신 설치 여부 확인)과 2번항목(실시간 감시 및 최신 업데이트 여부 확인) 의 경우 점검전 설치가 되어있지 않았으나, 고객님께서 설치를 진행해주셨고, 실시간 감시 또한 활성화 되어 보다 안전하게 이용하실수 있는점 참고 부탁드립니다.",
@@ -352,7 +355,7 @@ class MyApp(QWidget):
                             "현재 고객님 스마트폰에는 백신설치가 되어있지 않아 설치여부를 여쭈어 보았으나 해당부분 고객님꼐서 원치 않으신점을 고려하여 해당부분 설치 하지 않으셨습니다.\n고객님께서 좀더 안전하게 사용하시기 위해서 구글 플레이 스토어 에서 '모바일 백신' 검색후 설치 진행하신뒤 권한 까지 부여 하셔서 사용하시는것을 권고드랍니다.",
                             "현재 고객님께서 사용중이신 스마트폰에 백신 어플이 설치되어 있으나, 고객님께서 실시간 감시 활성화 및 업데이트 조치를 원하시지 않아, 해당부분 조치하지 않고 넘어가는점 양해 부탁드립니다.\n또한 보다 안전하게 사용하시려면 고객님께서 사용중이신 백신어플의 업데이트 유무를 확인하고 업데이트를 진행한뒤, 실시간 감시 기능까지 활성화 하여 사용해주시면 보다 안전하게 이용하실수 있는점 참고 부탁 드리겠습니다.",
                         ]
-                with open("./script.json", 'w', encoding="utf-8") as f:
+                with open("../script.json", 'w', encoding="utf-8") as f:
                     json.dump(data, f, ensure_ascii=False, indent=4)
                 
                 self.scripts = data
@@ -364,7 +367,7 @@ class MyApp(QWidget):
             except KeyError:
                 log_writer('I',"Modify Script File")
                 self.scripts['저장경로'] = windows_user_name + '/Desktop'
-                with open("./script.json", 'w', encoding="utf-8") as f:
+                with open("../script.json", 'w', encoding="utf-8") as f:
                     json.dump(self.scripts,f)
         except Exception as e:
             log_writer('E',"Scripts Init Error", e)
@@ -381,7 +384,9 @@ class MyApp(QWidget):
             pass
 
     def version_viwer(self):
-        return '1.6.0'
+        with open('version','r',encoding='utf-8') as f:
+            data = f.read()
+        return data
 
     def initUI(self):
         log_writer('I',"Mobile Report Program Init")
@@ -424,10 +429,10 @@ class MyApp(QWidget):
             except KeyError:
                 log_writer('I',"Script Modify")
                 self.scripts["CLIP"] = "N"
-                with open('./script.json', encoding='utf-8') as f:
+                with open('../script.json', encoding='utf-8') as f:
                     scripts = json.load(f)
                 scripts['CLIP'] = "N"
-                with open('./script.json', 'w', encoding='utf-8') as f:
+                with open('../script.json', 'w', encoding='utf-8') as f:
                     json.dump(scripts, f, ensure_ascii=False, indent=4)
 
             self.file_ck = QCheckBox("파일만저장")
@@ -438,10 +443,10 @@ class MyApp(QWidget):
             except KeyError:
                 log_writer('I',"Script Modify")
                 self.scripts["NFSF"] = "N"
-                with open('./script.json', encoding='utf-8') as f:
+                with open('../script.json', encoding='utf-8') as f:
                     scripts = json.load(f)
                 scripts['NFSF'] = "N"
-                with open('./script.json', 'w', encoding='utf-8') as f:
+                with open('../script.json', 'w', encoding='utf-8') as f:
                     json.dump(scripts, f, ensure_ascii=False, indent=4)
 
             self.change_script = QPushButton("문구 및 설정변경")
@@ -455,10 +460,10 @@ class MyApp(QWidget):
             except KeyError:
                 log_writer('I',"Script Modify")
                 self.scripts["MENU"] = "Y"
-                with open('./script.json', encoding='utf-8') as f:
+                with open('../script.json', encoding='utf-8') as f:
                     scripts = json.load(f)
                 scripts['MENU'] = "Y"
-                with open('./script.json', 'w', encoding='utf-8') as f:
+                with open('../script.json', 'w', encoding='utf-8') as f:
                     json.dump(scripts, f, ensure_ascii=False, indent=4)
 
             vaccine_text = QLabel("사용중인 백신(수동 입력시 ,으로 구분): ")
@@ -598,17 +603,17 @@ class MyApp(QWidget):
         try:
             if self.cp_ms_ck.isChecked():
                 self.scripts["MENU"] = "Y"
-                with open('./script.json', encoding='utf-8') as f:
+                with open('../script.json', encoding='utf-8') as f:
                     scripts = json.load(f)
                 scripts['MENU'] = "Y"
-                with open('./script.json', 'w', encoding='utf-8') as f:
+                with open('../script.json', 'w', encoding='utf-8') as f:
                     json.dump(scripts, f, ensure_ascii=False, indent=4)
             else:
                 self.scripts["MENU"] = "N"
-                with open('./script.json', encoding='utf-8') as f:
+                with open('../script.json', encoding='utf-8') as f:
                     scripts = json.load(f)
                 scripts['MENU'] = "N"
-                with open('./script.json', 'w', encoding='utf-8') as f:
+                with open('../script.json', 'w', encoding='utf-8') as f:
                     json.dump(scripts, f, ensure_ascii=False, indent=4)
         except Exception as e:
             log_writer('E',"Menual and Survey Setting Type Check Error", e)
@@ -620,17 +625,17 @@ class MyApp(QWidget):
         try:
             if self.clip_ck_box.isChecked():
                 self.scripts["CLIP"] = "Y"
-                with open('./script.json', encoding='utf-8') as f:
+                with open('../script.json', encoding='utf-8') as f:
                     scripts = json.load(f)
                 scripts['CLIP'] = "Y"
-                with open('./script.json', 'w', encoding='utf-8') as f:
+                with open('../script.json', 'w', encoding='utf-8') as f:
                     json.dump(scripts, f, ensure_ascii=False, indent=4)
             else:
                 self.scripts["CLIP"] = "N"
-                with open('./script.json', encoding='utf-8') as f:
+                with open('../script.json', encoding='utf-8') as f:
                     scripts = json.load(f)
                 scripts['CLIP'] = "N"
-                with open('./script.json', 'w', encoding='utf-8') as f:
+                with open('../script.json', 'w', encoding='utf-8') as f:
                     json.dump(scripts, f, ensure_ascii=False, indent=4)
         except Exception as e:
             log_writer('E',"ClipBoard Setting Type Check Error", e)
@@ -642,17 +647,17 @@ class MyApp(QWidget):
         try:
             if self.file_ck.isChecked():
                 self.scripts["NFSF"] = "Y"
-                with open('./script.json', encoding='utf-8') as f:
+                with open('../script.json', encoding='utf-8') as f:
                     scripts = json.load(f)
                 scripts['NFSF'] = "Y"
-                with open('./script.json', 'w', encoding='utf-8') as f:
+                with open('../script.json', 'w', encoding='utf-8') as f:
                     json.dump(scripts, f, ensure_ascii=False, indent=4)
             else:
                 self.scripts["NFSF"] = "N"
-                with open('./script.json', encoding='utf-8') as f:
+                with open('../script.json', encoding='utf-8') as f:
                     scripts = json.load(f)
                 scripts['NFSF'] = "N"
-                with open('./script.json', 'w', encoding='utf-8') as f:
+                with open('../script.json', 'w', encoding='utf-8') as f:
                     json.dump(scripts, f, ensure_ascii=False, indent=4)
         except Exception as e:
             log_writer('E',"File Save Type Check Error", e)
@@ -951,13 +956,13 @@ class MyApp(QWidget):
                         )
                         return 1
                     log_writer('I',"Report File Init (Filename = 'report_m.docx')")
-                    with open("./report_m.docx", "wb") as f:
+                    with open("../report_m.docx", "wb") as f:
                         f.write(report_data)
                     log_writer('I',"Report File Set (Filename = 'report_m.docx')")
-                    # doc = Document("./report_m.docx")
+                    # doc = Document("../report_m.docx")
                     
                     log_writer('I',"Docx Write Start")
-                    doc = Document("./report_m.docx")
+                    doc = Document("../report_m.docx")
                     log_writer('I',"Write Start Basic Info")
                     for i in doc.paragraphs:
                         if "Android_Version" in i.text:
@@ -1035,7 +1040,7 @@ class MyApp(QWidget):
                         doc.save(f"{self.scripts['저장경로']}/{self.seq_num}.docx")
 
                     log_writer('I',"Removed Basic Docx File")
-                    os.remove("./report_m.docx")
+                    os.remove("../report_m.docx")
                     QMessageBox.about(self, "알림", "저장 완료.")
                     if self.cp_ms_ck.isChecked():
                         log_writer('I',"Copy Secu Manual URL")
@@ -1081,9 +1086,10 @@ class MyApp(QWidget):
 
 if __name__ == "__main__":
     try:
-        if not os.path.isdir("./log"):
-            os.mkdir('./log')
+        if not os.path.isdir("../log"):
+            os.mkdir('../log')
         log_writer('I',"Main Module Load")
+
         app = QApplication(sys.argv)
         ex = MyApp()
 
