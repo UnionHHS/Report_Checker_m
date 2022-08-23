@@ -76,6 +76,8 @@ def runs():
 
 atexit.register(runs)
 try:
+    if not os.path.isdir("./log"):
+        os.mkdir('./log')
     log_writer('I',f"[Patcher] Update Check Target Server = {server_loc}")
     
     with open('./version', 'r', encoding='utf-8') as f:
