@@ -518,7 +518,7 @@ class MyApp(QWidget):
                 "8. 구글 2단계 인증 설정 여부 확인 : ",
             ]
             self.ans = ["", "", "", "", "", "", "", ""]
-            self.af_ans = ["",""]
+            self.af_ans = ["양호","양호"]
             self.stat_label = [QLabel(x) for x in question]
 
             self.yes_button = [QPushButton(self.stat_list[0]) for _ in range(len(question))]
@@ -802,7 +802,7 @@ class MyApp(QWidget):
             elif n == 0 or n == 1:
                 self.no_button[n].setText(self.stat_list[1])
                 self.no_button[n].setEnabled(False)
-                self.af_ans[n] = ""
+                self.af_ans[n] = "양호"
                 self.no_button[n].setStyleSheet('')
             self.yes_button[n].setText(self.stat_list[idx])
 
