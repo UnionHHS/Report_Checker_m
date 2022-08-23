@@ -1052,9 +1052,8 @@ class MyApp(QWidget):
                         copy("https://docs.google.com/forms/d/e/1FAIpQLSdfy-qViIlFArBpPMCgN6hyzuU7eSEelTNT_z72uXHzXI2Z7A/viewform?usp=sf_link")
                         request_page_ans = QMessageBox.question(self, "알림", "설문조사 페이지 복사 됨.", QMessageBox.Yes | QMessageBox.Yes)
                         copy("https://docs.google.com/forms/d/e/1FAIpQLSdfy-qViIlFArBpPMCgN6hyzuU7eSEelTNT_z72uXHzXI2Z7A/viewform?usp=sf_link")
-
-                    while not request_page_ans:
-                        time.sleep(0.01)
+                        while not request_page_ans:
+                            time.sleep(0.01)
 
                     log_writer('I',"Default Status Reset")
 
