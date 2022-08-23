@@ -1002,7 +1002,7 @@ class MyApp(QWidget):
                             text.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
 
                     for i in range(len(self.af_ans)):
-                        if self.af_ans[i] == "양호":
+                        if self.af_ans[i] == "양호" or self.af_ans[i] == '':
                             tables[1].rows[i + 1].cells[3].paragraphs[0].text = ""
                             text = (tables[1].rows[i + 1].cells[3].paragraphs[0].add_run(self.af_ans[i]))
                             text.bold = True
@@ -1012,7 +1012,7 @@ class MyApp(QWidget):
                             text = (tables[1].rows[i + 1].cells[3].paragraphs[0].add_run(self.af_ans[i]))
                             text.bold = True
                             text.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
-                            
+
                     log_writer('I',"Write End | Save Start")
                     log_writer('I',f"Save Location : {self.scripts['저장경로']}")
                     tm = time.localtime(time.time())
