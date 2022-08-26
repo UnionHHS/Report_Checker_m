@@ -747,9 +747,11 @@ class MyApp(QWidget):
             self.seq_data.setText("")
             self.any_data.setText("")
             for i in self.yes_button:
+                i.setText(self.stat_list[0])
                 i.setStyleSheet("")
                 i.setEnabled(False)
             for i in self.no_button:
+                i.setTtext(self.stat_list[1])
                 i.setStyleSheet('')
                 i.setEnabled(False)
 
@@ -768,6 +770,7 @@ class MyApp(QWidget):
                     temp = i.text().replace("양호", "")
                     i.setText(temp)
             self.ans = ["", "", "", "", "", "", "", ""]
+            self.af_ans = ["","",]
             self.running_seq[0] = ''
             self.running_seq[1] = ''
 
@@ -1087,22 +1090,6 @@ if __name__ == "__main__":
         if not os.path.isdir("./log"):
             os.mkdir('./log')
         log_writer('I',"Main Module Load")
-
-        # log_writer('I',f"[Patcher] Update Check Target Server = {('172.30.1.58',19520)}")
-    
-        # with open('./version', 'r', encoding='utf-8') as f:
-        #     hada = f.read()
-        # if hada == '':
-        #     raise "Update Failed Run Normal Mode"
-        # soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # soc.connect(('172.30.1.58',19520))
-        # # soc.connect(('192.168.120.100',19520))
-        # soc.send(hada.encode('utf-8'))
-        # data = soc.recv(1024)
-        # if data.decode('utf-8') == 'Version Changed':
-        #     log_writer('I',"[Patcher] Update Start")
-        #     ctypes.windll.user32.MessageBoxW(0, "프로그램 업데이트가 존재합니다.\n더욱 안정성 있는 사용을 위해 프로그램 업데이트를 진행합니다.", "알림", 0)
-        # os.popen('./launcher.exe')
 
         app = QApplication(sys.argv)
         ex = MyApp()
