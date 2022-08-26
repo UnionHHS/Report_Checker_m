@@ -770,7 +770,7 @@ class MyApp(QWidget):
                     temp = i.text().replace("양호", "")
                     i.setText(temp)
             self.ans = ["", "", "", "", "", "", "", ""]
-            self.af_ans = ["","",]
+            self.af_ans = ["양호","양호",]
             self.running_seq[0] = ''
             self.running_seq[1] = ''
 
