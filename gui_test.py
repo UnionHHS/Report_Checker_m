@@ -993,6 +993,7 @@ class MyApp(QWidget):
                     tables = doc.tables
                     log_writer('I',"Write Start Check List Result")
                     for i in range(len(self.ans)):
+                        log_writer('D',f'selected btn = {self.yes_button[i].text()} / data = {self.ans[i]}')
                         if self.ans[i] == "양호":
                             tables[1].rows[i + 1].cells[2].paragraphs[0].text = ""
                             text = (tables[1].rows[i + 1].cells[2].paragraphs[0].add_run(self.yes_button[i].text()))
@@ -1005,6 +1006,7 @@ class MyApp(QWidget):
                             text.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
 
                     for i in range(len(self.af_ans)):
+                        log_writer('D',f'selected btn = {self.no_button[i].text()} / data = {self.af_ans[i]}')
                         if self.af_ans[i] == "양호" or self.af_ans[i] == '':
                             tables[1].rows[i + 1].cells[3].paragraphs[0].text = ""
                             text = (tables[1].rows[i + 1].cells[3].paragraphs[0].add_run(self.no_button[i].text()))
