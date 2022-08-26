@@ -751,7 +751,7 @@ class MyApp(QWidget):
                 i.setStyleSheet("")
                 i.setEnabled(False)
             for i in self.no_button:
-                i.setTtext(self.stat_list[1])
+                i.setText(self.stat_list[1])
                 i.setStyleSheet('')
                 i.setEnabled(False)
 
@@ -995,24 +995,24 @@ class MyApp(QWidget):
                     for i in range(len(self.ans)):
                         if self.ans[i] == "양호":
                             tables[1].rows[i + 1].cells[2].paragraphs[0].text = ""
-                            text = (tables[1].rows[i + 1].cells[2].paragraphs[0].add_run(self.ans[i]))
+                            text = (tables[1].rows[i + 1].cells[2].paragraphs[0].add_run(self.yes_button[i].text()))
                             text.bold = True
                             text.font.color.rgb = RGBColor(0x00, 0x00, 0xFF)
                         elif self.ans[i] == "취약":
                             tables[1].rows[i + 1].cells[2].paragraphs[0].text = ""
-                            text = (tables[1].rows[i + 1].cells[2].paragraphs[0].add_run(self.ans[i]))
+                            text = (tables[1].rows[i + 1].cells[2].paragraphs[0].add_run(self.yes_button[i].text()))
                             text.bold = True
                             text.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
 
                     for i in range(len(self.af_ans)):
                         if self.af_ans[i] == "양호" or self.af_ans[i] == '':
                             tables[1].rows[i + 1].cells[3].paragraphs[0].text = ""
-                            text = (tables[1].rows[i + 1].cells[3].paragraphs[0].add_run(self.af_ans[i]))
+                            text = (tables[1].rows[i + 1].cells[3].paragraphs[0].add_run(self.no_button[i].text()))
                             text.bold = True
                             text.font.color.rgb = RGBColor(0x00, 0x00, 0xFF)
                         elif self.af_ans[i] == "취약":
                             tables[1].rows[i + 1].cells[3].paragraphs[0].text = ""
-                            text = (tables[1].rows[i + 1].cells[3].paragraphs[0].add_run(self.af_ans[i]))
+                            text = (tables[1].rows[i + 1].cells[3].paragraphs[0].add_run(self.no_button[i].text()))
                             text.bold = True
                             text.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
 
