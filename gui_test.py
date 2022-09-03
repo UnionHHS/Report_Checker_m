@@ -386,6 +386,7 @@ class MyApp(QWidget):
     def version_viwer(self):
         with open('./version','r',encoding='utf-8') as f:
             data = f.read()
+        log_writer('I',f'{data} Version Used')
         return data
 
     def initUI(self):
