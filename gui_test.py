@@ -934,7 +934,7 @@ class MyApp(QWidget):
                 QMessageBox.about(self,"알림","조치후 항목이 취약이나 백신이 선택되어있습니다.\n점검 결과 및 선택된 백신을 확인해주세요.")
 
             else:
-                # print(len(mobile_data.split('\n')))
+                # print(len(mobile_data.split('\n')))123
                 log_writer('I',"AnySupport Data Check Complete")
                 reply = QMessageBox.question(self,"저장 안내","이대로 저장하시겠습니까?",QMessageBox.Yes | QMessageBox.Yes ,QMessageBox.No)
 
