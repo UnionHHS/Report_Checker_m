@@ -924,9 +924,15 @@ class MyApp(QWidget):
                     if "" == self.ans[i]:
                         QMessageBox.about(self, "알림", f"입력 안된 값이 있습니다!\n{i+1}번 항목을 확인해주세요.")
                         break
+                    
             elif (self.vaccine_list.currentText() == '미설치' and self.af_ans[0] == '양호') or (self.vaccine_list.currentText() == '미설치' and self.af_ans[1] == '양호') or (self.vaccine_used.text() == '' and self.af_ans[0] == '양호') or (self.vaccine_used.text() == '' and self.af_ans[1] == '양호'):
                 log_writer('I',"Check Vaccine And CK-01, CK-02")
                 QMessageBox.about(self,"알림","점검 항목이 양호이나 선택된 백신이 미설치로 되어있습니다.\n점검 결과 및 선택된 백신을 확인해주세요.")
+
+            elif (self.vaccine_list.currentText() != '미설치' and self.af_ans[0] == '취약') or (self.vaccine_list.currentText() == '미설치' and self.af_ans[1] == '취약') or (self.vaccine_used.text() == '' and self.af_ans[0] == '취약') or (self.vaccine_used.text() == '' and self.af_ans[1] == '취약'):
+                log_writer('I',"Check Vaccine And CK-01, CK-02")
+                QMessageBox.about(self,"알림","점검 항목이 양호이나 선택된 백신이 미설치로 되어있습니다.\n점검 결과 및 선택된 백신을 확인해주세요.")
+
             else:
                 # print(len(mobile_data.split('\n')))
                 log_writer('I',"AnySupport Data Check Complete")
