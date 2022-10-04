@@ -97,6 +97,9 @@ try:
         log_writer("I","[Patcher] Main Process Kill Seq")
         os.system('taskkill /f /im mobile.exe')
         os.remove(r'.\bin\mobile.exe')
+    except FileNotFoundError as FNF:
+        ctypes.windll.user32.MessageBoxW(0, "실행파일을 찾을수 없습니다.\n 서버에서 새로 다운로드 합니다.", "알림", 16)
+        log_writer("E","[Patcher] File Not Found")
     except Exception as e:
         ctypes.windll.user32.MessageBoxW(0, "프로그램 업데이트를 실패했습니다.\n개발자에게 연락 후 나스 폴더에서 새로 받아주시길 바랍니다!", "오류", 16)
         log_writer("E","[Patcher] Kill Failed")

@@ -927,15 +927,15 @@ class MyApp(QWidget):
                         break
 #  and ((self.vaccine_used.text() == '' and self.af_ans[0] == '양호') or (self.vaccine_used.text() == '' and self.af_ans[1] == '양호'))
             elif ((self.vaccine_list.currentText() == '미설치' and self.af_ans[0] == '양호') or (self.vaccine_list.currentText() == '미설치' and self.af_ans[1] == '양호')) or ((self.vaccine_used.text() == '' and self.af_ans[0] == '양호') or (self.vaccine_used.text() == '' and self.af_ans[1] == '양호')):
-                log_writer('I',"Check Vaccine And CK-01, CK-02")
+                log_writer('I',"Check Vaccine And CK-01, CK-02 From Line 930")
                 QMessageBox.about(self,"알림","점검 항목이 양호이나 선택된 백신이 미설치로 되어있습니다.\n점검 결과 및 선택된 백신을 확인해주세요.")
 
             elif (self.vaccine_list.currentText() != '미설치' and self.af_ans[0] == '취약') or (self.vaccine_used.text() == '' and self.af_ans[0] == '취약'):
-                log_writer('I',"Check Vaccine And CK-01, CK-02")
+                log_writer('I',"Check Vaccine And CK-01, CK-02 From line 934")
                 QMessageBox.about(self,"알림","조치후 항목이 취약이나 백신이 선택되어있습니다.\n점검 결과 및 선택된 백신을 확인해주세요.")
 
             elif (self.ans[1] == '양호' and self.ans[0] == '취약'):
-                log_writer('I',"Check Vaccine And CK-01, CK-02")
+                log_writer('I',"Check Vaccine And CK-01, CK-02 From 938")
                 QMessageBox.about(self,"알림","백신설치 여부 항목 조치전이 항목이 취약이나, 백신 업데이트 및 실시간 감시 항목이 양호일 수 없습니다.\n점검 항목을 확인해주세요.")
 
             else:
@@ -1086,7 +1086,7 @@ class MyApp(QWidget):
 
                     self.install_vaccine.setEnabled(False)
                     self.vaccine_list.setEnabled(False)
-                    self.vaccine_list.setCurrentIndex(0)
+                    # self.vaccine_list.setCurrentIndex(0)
                     # print(self.vaccine_list.currentText())
                     # try:
                     self.hbox1.itemAt(1).widget().setParent(None)
