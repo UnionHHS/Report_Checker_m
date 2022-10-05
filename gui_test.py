@@ -763,7 +763,7 @@ class MyApp(QWidget):
             self.hbox1.itemAt(1).widget().setParent(None)
             self.hbox1.addWidget(self.vaccine_list)
 
-            self.vaccine_used.setText("")
+            self.vaccine_used.setText("미설치")
             for i in self.stat_label:
                 if "취약" in i.text():
                     temp = i.text().replace("취약", "")
@@ -1082,7 +1082,7 @@ class MyApp(QWidget):
                         i.setEnabled(False)
 
                     self.vaccine_used.setEnabled(False)
-                    self.vaccine_used.setText("")
+                    self.vaccine_used.setText("미설치")
 
                     self.install_vaccine.setEnabled(False)
                     self.vaccine_list.setEnabled(False)
