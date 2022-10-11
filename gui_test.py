@@ -481,6 +481,8 @@ class MyApp(QWidget):
             self.any_confirm.released.connect(self.enable_any_data)
 
             self.stat_now = QLabel("양호 : 0 | 취약 : 0")
+            self.stat_n_cl_cnt = 0
+            self.stat_now.mousePressEvent = self.egg1
 
             self.clip_ck_box = QCheckBox("안내글")
             self.clip_ck_box.stateChanged.connect(self.CLIP_stat)
@@ -640,6 +642,14 @@ class MyApp(QWidget):
             log_writer('E',"Mobile Report Program Init Error", e)
             ctypes.windll.user32.MessageBoxW(0, "프로그램 에러가 발생하였습니다.\n폴더내 생성된 압축파일을 개발자한테 전달 부탁드립니다.", "오류", 16)
             sys.exit(1000)
+
+    def egg1(self,event):
+        if self.stat_n_cl_cnt >= 12:
+            txt = self.stat_now.text()
+            self.stat_now.setText(txt.replace('양호','Y').replace('취약','N'))
+            self.stat_n_cl_cnt = 0
+        else:
+            self.stat_n_cl_cnt += 1
 
     def cp_cklist(self):
 
