@@ -875,7 +875,7 @@ class MyApp(QWidget):
                 self.no_button[n].setText(self.stat_list[idx])
                 self.no_button[n].setEnabled(True)
                 self.af_ans[n] = self.stat_list[idx]
-            elif n == 0 or n == 1:
+            elif not (n == 2 or n == 4 or n == 7) :
                 self.no_button[n].setText(self.stat_list[1])
                 self.no_button[n].setEnabled(False)
                 self.af_ans[n] = "양호"
